@@ -257,4 +257,4 @@ void yydebug(char const *msg, Object *o)
     }
 }
 
-void yymessage(const char *str) { cout << "-- INFO: " << str << " Line:" << yylineno << endl; }
+void yymessage(const char *msg) { cout << "-- INFO: " << msg << " Line:" << yylineno << endl; }

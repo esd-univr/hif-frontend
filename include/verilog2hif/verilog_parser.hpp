@@ -184,7 +184,7 @@ public:
     hif::Value *parse_BasedNumber(number_t &BASED_NUMBER);
     hif::Value *parse_DecNumber(number_t &BASED_NUMBER);
     hif::Value *parse_DecBasedNumber(number_t &DEC_NUMBER, number_t &BASED_NUMBER);
-    hif::Value *parse_RealTime(realNum_t &REALTIME);
+    hif::Value *parse_RealTime(real_number_t &REALTIME);
 
     /* -----------------------------------------------------------------------
      *  EXPRESSIONS

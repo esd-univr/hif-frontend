@@ -547,7 +547,7 @@ WC [ \t\b\f\r\v]+
         std::string identifier = stringToLower(yytext);
 
         // No keyword recognized
-        yylval.Identifier_data.pos = yycolumno;
+        yylval.Identifier_data.column = yycolumno;
         yylval.Identifier_data.len = static_cast<int>(strlen(yytext));
         yylval.Identifier_data.line = yylineno;
         yylval.Identifier_data.name = hif::application_utils::hif_strdup(identifier.c_str());
@@ -579,7 +579,7 @@ WC [ \t\b\f\r\v]+
 
 ({base}#{based_integer}(\.{based_integer})?#({exponent})?) {
 
-    yylval.Identifier_data.pos = yycolumno;
+    yylval.Identifier_data.column = yycolumno;
     yylval.Identifier_data.len = static_cast<int>(strlen(yytext));
     yylval.Identifier_data.line = yylineno;
     yylval.Identifier_data.name = hif::application_utils::hif_strdup(yytext);
@@ -595,7 +595,7 @@ WC [ \t\b\f\r\v]+
 
 ({decimal_literal})|({base}:{based_integer}(\.{based_integer})?:({exponent})?) {
   
-    yylval.Identifier_data.pos = yycolumno;
+    yylval.Identifier_data.column = yycolumno;
     yylval.Identifier_data.len = static_cast<int>(strlen(yytext));
     yylval.Identifier_data.line = yylineno;
     yylval.value = hif::application_utils::hif_strdup(yytext);
@@ -611,7 +611,7 @@ WC [ \t\b\f\r\v]+
 
 '({graphic_character}|\"|\%)' {
 
-    yylval.Identifier_data.pos = yycolumno;
+    yylval.Identifier_data.column = yycolumno;
     yylval.Identifier_data.len = static_cast<int>(strlen(yytext));
     yylval.Identifier_data.line = yylineno;
     yylval.Identifier_data.name = hif::application_utils::hif_strdup(yytext);
@@ -627,7 +627,7 @@ WC [ \t\b\f\r\v]+
 
 (\"({graphic_character}|(\"\")|\%)*\")|(\%({graphic_character}|(\%\%)|\")*\%) {
 
-    yylval.Identifier_data.pos = yycolumno;
+    yylval.Identifier_data.column = yycolumno;
     yylval.Identifier_data.len = static_cast<int>(strlen(yytext));
     yylval.Identifier_data.line = yylineno;
     yylval.Identifier_data.name = hif::application_utils::hif_strdup(yytext);
@@ -643,7 +643,7 @@ WC [ \t\b\f\r\v]+
 
 {hex_specifier}(\"{extended_digit}(_?{extended_digit})*\"|\%{extended_digit}(_?{extended_digit})*\%) {
 
-    yylval.Identifier_data.pos = yycolumno;
+    yylval.Identifier_data.column = yycolumno;
     yylval.Identifier_data.len = static_cast<int>(strlen(yytext));
     yylval.Identifier_data.line = yylineno;
     yylval.Identifier_data.name = hif::application_utils::hif_strdup(yytext);
@@ -659,7 +659,7 @@ WC [ \t\b\f\r\v]+
 
 {oct_specifier}(\"{oct}(_?{oct})*\"|\%{oct}(_?{oct})*\%) {
 
-    yylval.Identifier_data.pos = yycolumno;
+    yylval.Identifier_data.column = yycolumno;
     yylval.Identifier_data.len = static_cast<int>(strlen(yytext));
     yylval.Identifier_data.line = yylineno;
 
@@ -678,7 +678,7 @@ WC [ \t\b\f\r\v]+
 
 {bit_specifier}(\"{bit}(_?{bit})*\"|\%{bit}(_?{bit})*\%) {
 
-    yylval.Identifier_data.pos = yycolumno;
+    yylval.Identifier_data.column = yycolumno;
     yylval.Identifier_data.len = static_cast<int>(strlen(yytext));
     yylval.Identifier_data.line = yylineno;
     yylval.Identifier_data.name = hif::application_utils::hif_strdup(yytext);

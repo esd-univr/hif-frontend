@@ -9,7 +9,9 @@
 #include <hif/hif.hpp>
 
 /// @brief Marks units with the AMS language tag.
+/// @details
 /// In fact, parser cannot directly mark design units and libraries as AMS.
 /// Thus, this visitor refines from RTL to AMS language.
-/// @param o The root.
+/// @param o The object to mark.
+/// @param sem The semantics object.
 void markAmsLanguage(hif::Object *o, hif::semantics::ILanguageSemantics *sem);

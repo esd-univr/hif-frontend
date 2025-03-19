@@ -10,4 +10,8 @@
 #ident "$Id: lexor_keyword.h,v 1.2 2002/08/12 01:34:59 steve Exp $"
 #endif
 
+/// @brief Lexor keyword code.
+/// @param str The keyword string.
+/// @param len The keyword length.
+/// @return The keyword code.
 extern int lexor_keyword_code(const char *str, unsigned len);

@@ -85,7 +85,7 @@ VerilogParser * parserInstance = nullptr;
     keyword_data_t    Keyword_data;
     identifier_data_t Identifier_data;
     number_t          number;
-    realNum_t         realNum;
+    real_number_t         realNum;
 
     module_item_t *                                            module_item_struct;
     module_or_generate_item_t *                                module_or_generate_item_struct;

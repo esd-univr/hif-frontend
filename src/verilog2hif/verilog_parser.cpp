@@ -3959,7 +3959,7 @@ Value *VerilogParser::parse_DecNumber(number_t &BASED_NUMBER)
     return intValue_o;
 }
 
-Value *VerilogParser::parse_RealTime(realNum_t &REALTIME)
+Value *VerilogParser::parse_RealTime(real_number_t &REALTIME)
 {
     double ris = 0.0;
     double num = 0.0;

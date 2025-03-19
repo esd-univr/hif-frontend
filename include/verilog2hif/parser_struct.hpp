@@ -32,103 +32,133 @@ struct specify_item_t;
 struct specify_terminal_descriptor_t;
 struct timing_check_event_control_t;
 
+/// @brief Data about a identifier.
 typedef struct {
-    int pos;
-    int len;
-    int line;
-    char *name;
+    int line;   ///< The source code line number.
+    int column; ///< The source code column number.
+    int len;    ///< The length of the token.
+    char *name; ///< The name of the token.
 } identifier_data_t;
 
+/// @brief Data about a keyword.
 typedef struct {
-    int line;
-    int column;
+    int line;   ///< The source code line number.
+    int column; ///< The source code column number.
 } keyword_data_t;
 
+/// @brief Data about a number.
 typedef struct {
-    int bits;    // bit length
-    char *value; // value
-    char type;
-    bool sign;
+    int bits;    ///< The number of bits.
+    char *value; ///< The value of the number.
+    char type;   ///< The type of the number.
+    bool sign;   ///< The sign of the number.
 } number_t;
 
+/// @brief Data about a real number.
 typedef struct {
-    bool e;
-    char *value;
-    char *exp;
-} realNum_t;
+    bool e;      ///< The presence of the exponent.
+    char *value; ///< The value of the number.
+    char *exp;   ///< The exponent of the number.
+} real_number_t;
 
+/// @brief Data about generate procedures.
 struct module_or_generate_item_declaration_t {
+    /// @brief Constructor.
     module_or_generate_item_declaration_t();
+
+    /// @brief Destructor.
     ~module_or_generate_item_declaration_t();
+
+    /// @brief Copy constructor.
+    /// @param o The object to copy.
     module_or_generate_item_declaration_t(const module_or_generate_item_declaration_t &o);
+
+    /// @brief Assignment operator.
+    /// @param o The object to copy.
+    /// @return Reference to the current object.
     module_or_generate_item_declaration_t &operator=(const module_or_generate_item_declaration_t &o);
 
-    hif::BList<hif::Declaration> *net_declaration;
-    hif::BList<hif::Declaration> *reg_declaration;
-    hif::BList<hif::Declaration> *integer_declaration;
-    hif::BList<hif::Declaration> *real_declaration;
-    hif::BList<hif::Declaration> *time_declaration;
-    hif::BList<hif::Declaration> *realtime_declaration;
-    hif::BList<hif::Declaration> *event_declaration;
-    hif::BList<hif::Declaration> *genvar_declaration;
-    hif::BList<hif::Declaration> *branch_declaration;
-    hif::Procedure *task_declaration;
-    hif::Function *function_declaration;
-    hif::BList<hif::Generate> *generate_declaration;
+    hif::BList<hif::Declaration> *net_declaration;      ///< List of net declarations.
+    hif::BList<hif::Declaration> *reg_declaration;      ///< List of register declarations.
+    hif::BList<hif::Declaration> *integer_declaration;  ///< List of integer declarations.
+    hif::BList<hif::Declaration> *real_declaration;     ///< List of real declarations.
+    hif::BList<hif::Declaration> *time_declaration;     ///< List of time declarations.
+    hif::BList<hif::Declaration> *realtime_declaration; ///< List of realtime declarations.
+    hif::BList<hif::Declaration> *event_declaration;    ///< List of event declarations.
+    hif::BList<hif::Declaration> *genvar_declaration;   ///< List of genvar declarations.
+    hif::BList<hif::Declaration> *branch_declaration;   ///< List of branch declarations.
+    hif::Procedure *task_declaration;                   ///< Task declaration.
+    hif::Function *function_declaration;                ///< Function declaration.
+    hif::BList<hif::Generate> *generate_declaration;    ///< List of generate declarations.
 };
 
+/// @brief Data about a module or generate item.
 struct module_or_generate_item_t {
+    /// @brief Constructor.
     module_or_generate_item_t();
+
+    /// @brief Destructor.
     ~module_or_generate_item_t();
+
+    /// @brief Copy constructor.
+    /// @param o The object to copy.
     module_or_generate_item_t(const module_or_generate_item_t &o);
+
+    /// @brief Assignment operator.
+    /// @param o The object to copy.
+    /// @return Reference to the current object.
     module_or_generate_item_t &operator=(const module_or_generate_item_t &o);
 
-    hif::Contents *initial_construct;
-    hif::BList<hif::Const> *local_parameter_declaration;
-    hif::StateTable *always_construct;
-    hif::StateTable *analog_construct;
-    hif::BList<hif::Assign> *continuous_assign;
-    hif::BList<hif::Instance> *module_instantiation;
+    hif::Contents *initial_construct;                    ///< Pointer to the initial construct.
+    hif::BList<hif::Const> *local_parameter_declaration; ///< List of local parameter declarations.
+    hif::StateTable *always_construct;                   ///< Pointer to the always construct.
+    hif::StateTable *analog_construct;                   ///< Pointer to the analog construct.
+    hif::BList<hif::Assign> *continuous_assign;          ///< List of continuous assignments.
+    hif::BList<hif::Instance> *module_instantiation;     ///< List of module instantiations.
 
+    /// @brief The module item.
     module_or_generate_item_declaration_t *module_or_generate_item_declaration;
 };
 
+/// @brief Data about a non-port module item.
+/// @todo Add: generate_region, specparam_declaration.
 struct non_port_module_item_t {
-    module_or_generate_item_t *module_or_generate_item;
-    hif::BList<hif::ValueTP> *parameter_declaration;
-    std::list<specify_item_t *> *specify_block;
 
-    // TO BE COMPLETED
-    // .. generate_region
-    // .. specparam_declaration
+    hif::BList<hif::ValueTP> *parameter_declaration; ///< List of parameter declarations.
+    std::list<specify_item_t *> *specify_block;      ///< List of specify blocks.
+
+    module_or_generate_item_t *module_or_generate_item; ///< Pointer to the module or generate item.
 };
 
+/// @brief Data about a module item.
 struct module_item_t {
-    hif::BList<hif::Port> *port_declaration_identifiers;
-    non_port_module_item_t *non_port_module_item;
+    hif::BList<hif::Port> *port_declaration_identifiers; ///< List of port declaration identifiers.
+
+    non_port_module_item_t *non_port_module_item; ///< Pointer to the non-port module item.
 };
 
+/// @brief Data about a list of port connections.
 struct list_of_port_connections_t {
-    hif::BList<hif::Value> *ordered_port_connection_list;
-    hif::BList<hif::PortAssign> *named_port_connection_list;
+    hif::BList<hif::Value> *ordered_port_connection_list;    ///< List of ordered port connections.
+    hif::BList<hif::PortAssign> *named_port_connection_list; ///< List of named port connections.
 };
 
+/// @brief Data about a list of parameter assignments.
 struct list_of_parameter_assignment_t {
-    hif::BList<hif::Value> *ordered_parameter_assignment_list;
-    hif::BList<hif::ValueTPAssign> *named_parameter_assignment_list;
+    hif::BList<hif::Value> *ordered_parameter_assignment_list;       ///< List of ordered parameter assignments.
+    hif::BList<hif::ValueTPAssign> *named_parameter_assignment_list; ///< List of named parameter assignments.
 };
 
+/// @brief Data about a block item declaration.
+/// @todo Add: parameter_declaration, event_declaration.
 struct block_item_declaration_t {
-    hif::BList<hif::Const> *local_parameter_declaration;
-    hif::BList<hif::Signal> *variable_declaration;
-    hif::BList<hif::Signal> *reg_variable_declaration;
-    hif::BList<hif::Signal> *integer_variable_declaration;
+    hif::BList<hif::Const> *local_parameter_declaration;   ///< List of local parameter declarations.
+    hif::BList<hif::Signal> *variable_declaration;         ///< List of variable declarations.
+    hif::BList<hif::Signal> *reg_variable_declaration;     ///< List of reg variable declarations.
+    hif::BList<hif::Signal> *integer_variable_declaration; ///< List of integer variable declarations.
 
-    // TO BE COMPLETED
-    // parameter_declaration
-    // event_declaration
-    // ...
-
+    /// @brief Get the first object.
+    /// @return a pointer to the first object.
     hif::Object *getFirstObject();
 };
 

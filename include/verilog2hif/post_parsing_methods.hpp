@@ -6,8 +6,18 @@
 
 #pragma once
 
+/// @brief Perform the first step of the post-parsing refinements.
+/// @param o pointer to the system we are working on.
+/// @param sem the semantic we are going to use.
 void performStep1Refinements(hif::System *o, hif::semantics::ILanguageSemantics *sem);
 
+/// @brief Perform the second step of the post-parsing refinements.
+/// @param o pointer to the system we are working on.
+/// @param sem the semantic we are going to use.
 void performStep2Refinements(hif::System *o, hif::semantics::ILanguageSemantics *sem);
 
+/// @brief Perform the third step of the post-parsing refinements.
+/// @param o pointer to the system we are working on.
+/// @param sem the semantic we are going to use.
+/// @param preserveStructure if true, the structure of the AST is preserved.
 void performStep3Refinements(hif::System *o, hif::semantics::ILanguageSemantics *sem, const bool preserveStructure);
