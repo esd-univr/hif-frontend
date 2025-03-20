@@ -1,6 +1,7 @@
 /// @file vhdl2hifParseLine.cpp
 /// @brief
-/// @copyright (c) 2024 Electronic Systems Design (ESD) Lab @ UniVR
+/// Copyright (c) 2024-2025, Electronic Systems Design (ESD) Group,
+/// Univeristy of Verona.
 /// This file is distributed under the BSD 2-Clause License.
 /// See LICENSE.md for details.
 
@@ -10,11 +11,11 @@ vhdl2hifParseLine::vhdl2hifParseLine(int argc, char *argv[])
     : CommandLineParser()
 {
     addToolInfos(
-        // toolName, copyright
+        // Tool name.
         "vhdl2hif",
-        "Copyright (c) 2024 Electronic Systems Design (ESD) Lab @ UniVR"
-        "This file is distributed under the BSD 2-Clause License."
-        "See LICENSE.md for details.",
+        // Copyright.
+        "Copyright (c) 2024-2025, Electronic Systems Design (ESD) Group, Univeristy of Verona."
+        "This file is distributed under the BSD 2-Clause License.",
         // description
         "Generates HIF from a VHDL description.",
         // synopsys

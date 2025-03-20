@@ -1,7 +1,8 @@
 /// @file vhdl_support.hpp
 /// @brief Header file that contains all the support functions used by the
 /// VHDL parser to convert the VHDL code into the HIF format.
-/// @copyright (c) 2024 Electronic Systems Design (ESD) Lab @ UniVR
+/// Copyright (c) 2024-2025, Electronic Systems Design (ESD) Group,
+/// Univeristy of Verona.
 /// This file is distributed under the BSD 2-Clause License.
 /// See LICENSE.md for details.
 

@@ -1,6 +1,7 @@
 /// @file verilog2hif_parse_line.cpp
 /// @brief
-/// @copyright (c) 2024 Electronic Systems Design (ESD) Lab @ UniVR
+/// Copyright (c) 2024-2025, Electronic Systems Design (ESD) Group,
+/// Univeristy of Verona.
 /// This file is distributed under the BSD 2-Clause License.
 /// See LICENSE.md for details.
 
@@ -20,11 +21,11 @@ Verilog2hifParseLine::Verilog2hifParseLine(int argc, char *argv[])
     , _amsFiles()
 {
     addToolInfos(
-        // toolName, copyright
+        // Tool name.
         "verilog2hif",
-        "Copyright (c) 2024 Electronic Systems Design (ESD) Lab @ UniVR"
-        "This file is distributed under the BSD 2-Clause License."
-        "See LICENSE.md for details.",
+        // Copyright.
+        "Copyright (c) 2024-2025, Electronic Systems Design (ESD) Group, Univeristy of Verona."
+        "This file is distributed under the BSD 2-Clause License.",
         // description
         "Generates HIF from a Verilog/Verilog-AMS description.",
         // synopsys
