@@ -1,6 +1,7 @@
 /// @file parse_line.hpp
 /// @brief Contains the command line parser for the Verilog2hif application.
-/// @copyright (c) 2024 Electronic Systems Design (ESD) Lab @ UniVR
+/// Copyright (c) 2024-2025, Electronic Systems Design (ESD) Group,
+/// Univeristy of Verona.
 /// This file is distributed under the BSD 2-Clause License.
 /// See LICENSE.md for details.
 
@@ -23,7 +24,7 @@ public:
 
     /// @brief Function to get the Verilog-AMS source file.
     /// @return Files object containing the Verilog-AMS source file.
-    hif::Files getAmsFiles();
+    Files getAmsFiles();
 
     /// @brief If the user whants to consider ternary operators without 'X' and
     /// 'Z' cases.
@@ -62,5 +63,5 @@ protected:
     std::string _cleanFileName(const std::string &fileName);
 
     /// @brief Function to extract the path of the verilog source file.
-    hif::Files _amsFiles;
+    Files _amsFiles;
 };

@@ -1,7 +1,8 @@
 /// @file vhdl_parser_struct.hpp
 /// @brief This file contains the definition of the structures used by the
 /// vhdl parser. The structures are used to build the HIF tree.
-/// @copyright (c) 2024 Electronic Systems Design (ESD) Lab @ UniVR
+/// Copyright (c) 2024-2025, Electronic Systems Design (ESD) Group,
+/// Univeristy of Verona.
 /// This file is distributed under the BSD 2-Clause License.
 /// See LICENSE.md for details.
 
@@ -39,16 +40,18 @@ struct instantiation_list_t;
 struct assert_directive_t;
 struct verification_directive_t;
 
+/// @brief Data about a identifier.
 typedef struct {
-    int pos;
-    int len;
-    int line;
-    char *name;
+    int line;   ///< The source code line number.
+    int column; ///< The source code column number.
+    int len;    ///< The length of the token.
+    char *name; ///< The name of the token.
 } identifier_data_t;
 
+/// @brief Data about a keyword.
 typedef struct {
-    int line;
-    int column;
+    int line;   ///< The source code line number.
+    int column; ///< The source code column number.
 } keyword_data_t;
 
 /* -----------------------------------------------------------------------
