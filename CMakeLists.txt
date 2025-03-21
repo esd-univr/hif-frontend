@@ -51,6 +51,8 @@ find_package(HIF REQUIRED)
 find_package(FLEX REQUIRED)
 find_package(BISON REQUIRED)
 
+find_program(CLANG_TIDY_EXE NAMES clang-tidy)
+
 # -----------------------------------------------------------------------------
 # -----------------------------------------------------------------------------
 # VERILOG2HIF

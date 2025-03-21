@@ -20,4 +20,4 @@ void performStep2Refinements(hif::System *o, hif::semantics::ILanguageSemantics 
 /// @param o pointer to the system we are working on.
 /// @param sem the semantic we are going to use.
 /// @param preserveStructure if true, the structure of the AST is preserved.
-void performStep3Refinements(hif::System *o, hif::semantics::ILanguageSemantics *sem, const bool preserveStructure);
+void performStep3Refinements(hif::System *o, hif::semantics::ILanguageSemantics *sem, bool preserveStructure);

@@ -40,15 +40,15 @@ struct assert_directive_t;
 struct verification_directive_t;
 
 typedef struct {
-    int pos;
-    int len;
-    int line;
-    char *name;
+    int line;   ///< The source code line number.
+    int column; ///< The source code column number.
+    int len;    ///< The length of the token.
+    char *name; ///< The name of the token.
 } identifier_data_t;
 
 typedef struct {
-    int line;
-    int column;
+    int line;   ///< The source code line number.
+    int column; ///< The source code column number.
 } keyword_data_t;
 
 /* -----------------------------------------------------------------------
@@ -74,9 +74,8 @@ struct primary_unit_t {
 
 struct architecture_body_t {
     architecture_body_t()
-        : contents(nullptr)
-        , entity_name(nullptr)
-        , components()
+        : 
+         components()
     {
         // ntd
     }
@@ -95,17 +94,18 @@ struct architecture_body_t {
         // ntd
     }
 
-    architecture_body_t &operator=(const architecture_body_t &o)
+    auto operator=(const architecture_body_t &o) -> architecture_body_t &
     {
-        if (this == &o)
+        if (this == &o) {
             contents = o.contents;
+}
         entity_name = o.entity_name;
         components  = o.components;
         return *this;
     }
 
-    hif::Contents *contents;
-    hif::Identifier *entity_name;
+    hif::Contents *contents{nullptr};
+    hif::Identifier *entity_name{nullptr};
     std::list<hif::DesignUnit *> components;
 };
 
@@ -191,9 +191,7 @@ struct binding_indication_t {
 /// @brief The component instances to which this component configuration applies.
 struct instantiation_list_t {
     instantiation_list_t()
-        : identifier_list(nullptr)
-        , others(false)
-        , all(false)
+         
     {
         // do nothing
     }
@@ -201,13 +199,13 @@ struct instantiation_list_t {
     // Mutually exclusive:
 
     /// @brief List of component instances.
-    hif::BList<hif::Identifier> *identifier_list;
+    hif::BList<hif::Identifier> *identifier_list{nullptr};
 
     /// @brief Field indicating all unspecified instances.
-    bool others;
+    bool others{false};
 
     /// @brief Field indicating all instances.
-    bool all;
+    bool all{false};
 };
 
 /// @brief Identifies the component instances to which this component
@@ -265,17 +263,21 @@ struct configuration_map_key_t {
     // Note: by now, only architecture is supported.
     std::string view;
 
-    bool operator<(const configuration_map_key_t &other) const
+    auto operator<(const configuration_map_key_t &other) const -> bool
     {
-        if (this == &other)
+        if (this == &other) {
             return false;
+}
 
-        if (design_unit < other.design_unit)
+        if (design_unit < other.design_unit) {
             return true;
-        if (configuration < other.configuration)
+}
+        if (configuration < other.configuration) {
             return true;
-        if (view < other.view)
+}
+        if (view < other.view) {
             return true;
+}
 
         return false;
     }

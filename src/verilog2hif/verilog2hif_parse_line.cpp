@@ -6,13 +6,14 @@
 
 #include "verilog2hif/parse_line.hpp"
 
-static inline bool __checkExtension(const std::string &file_name, const std::string &extension)
+static inline auto checkExtension(const std::string &file_name, const std::string &extension) -> bool
 {
-    std::string::size_type size, index;
+    std::string::size_type size = 0;
+    std::string::size_type index = 0;
     size  = file_name.size();
     index = file_name.find(extension, 0);
 
-    return ((index == std::string::npos) || (size - index != extension.size())) ? false : true;
+    return (index != std::string::npos) && (size - index == extension.size());
 }
 
 Verilog2hifParseLine::Verilog2hifParseLine(int argc, char *argv[])
@@ -58,16 +59,18 @@ Verilog2hifParseLine::~Verilog2hifParseLine()
     // ntd
 }
 
-bool Verilog2hifParseLine::getTernary() const { return isOptionFlagSet('t'); }
+auto Verilog2hifParseLine::getTernary() const -> bool { return isOptionFlagSet('t'); }
 
-bool Verilog2hifParseLine::getStructure() const { return isOptionFlagSet('s'); }
+auto Verilog2hifParseLine::getStructure() const -> bool { return isOptionFlagSet('s'); }
 
 void Verilog2hifParseLine::_validateArguments()
 {
-    if (!_options['h'].value.empty())
+    if (!_options['h'].value.empty()) {
         printHelp();
-    if (!_options['v'].value.empty())
+}
+    if (!_options['v'].value.empty()) {
         printVersion();
+}
 
     if (_files.empty()) {
         messageError(
@@ -77,7 +80,7 @@ void Verilog2hifParseLine::_validateArguments()
     }
 
     // Validate input file list
-    for (Files::iterator i = _files.begin(); i != _files.end();) {
+    for (auto i = _files.begin(); i != _files.end();) {
         std::string cleanFile = _cleanFileName(*i);
         if (_checkVerilogFile(cleanFile)) {
             // OK
@@ -92,33 +95,35 @@ void Verilog2hifParseLine::_validateArguments()
 
     // Establish output file name
     std::string out = _options['o'].value;
-    if (out == "") {
+    if (out.empty()) {
         out = "out.hif.xml";
     } else {
         std::string::size_type ix = out.find(".hif.xml");
-        if (ix == std::string::npos)
+        if (ix == std::string::npos) {
             out += ".hif.xml";
+}
     }
     _options['o'].value = out;
 }
 
-bool Verilog2hifParseLine::_checkVerilogFile(const std::string &fileName) { return __checkExtension(fileName, ".v"); }
+auto Verilog2hifParseLine::_checkVerilogFile(const std::string &fileName) -> bool { return checkExtension(fileName, ".v"); }
 
-bool Verilog2hifParseLine::_checkVerilogAmsFile(const std::string &fileName)
+auto Verilog2hifParseLine::_checkVerilogAmsFile(const std::string &fileName) -> bool
 {
-    return __checkExtension(fileName, ".va") || __checkExtension(fileName, ".vams");
+    return checkExtension(fileName, ".va") || checkExtension(fileName, ".vams");
 }
 
-std::string Verilog2hifParseLine::_cleanFileName(const std::string &fileName)
+auto Verilog2hifParseLine::_cleanFileName(const std::string &fileName) -> std::string
 {
     std::string cleanFile;
-    size_t found = fileName.find_last_of("/");
-    if (found != std::string::npos)
+    size_t found = fileName.find_last_of('/');
+    if (found != std::string::npos) {
         cleanFile = fileName.substr(found + 1);
-    else
+    } else {
         cleanFile = fileName;
+}
 
     return cleanFile;
 }
 
-std::vector<std::string> Verilog2hifParseLine::getAmsFiles() { return _amsFiles; }
+auto Verilog2hifParseLine::getAmsFiles() -> std::vector<std::string> { return _amsFiles; }

@@ -35,9 +35,9 @@ void yyerror [[noreturn]] (const char *msg, hif::Object *o = nullptr);
 void yywarning(const char *msg, hif::Object *o = nullptr);
 void yydebug(const char *msg, hif::Object *o = nullptr);
 
-template <typename T> hif::BList<T> *initBList(T *p)
+template <typename T> auto initBList(T *p) -> hif::BList<T> *
 {
-    hif::BList<T> *ret = new hif::BList<T>();
+    auto *ret = new hif::BList<T>();
     ret->push_back(p);
     return ret;
 }
@@ -56,7 +56,7 @@ template <typename T> hif::BList<T> *initBList(T *p)
 /// @param base base information of value
 /// @return string that represent bit representation of number
 ///
-std::string toBits(const char *value, int base);
+auto toBits(const char *value, int base) -> std::string;
 
 // //////////////////////////////////////////////////////////////
 // //////////////////////////////////////////////////////////////
@@ -68,7 +68,7 @@ std::string toBits(const char *value, int base);
 /// @param vo FielfRefObject to translate
 /// @return String notation
 ///
-std::string fro2string(hif::Value *vo);
+auto fro2string(hif::Value *vo) -> std::string;
 
 ///
 /// @brief Function that starts from char* representation of bit value
@@ -77,7 +77,7 @@ std::string fro2string(hif::Value *vo);
 /// @param value char* representation if bit value
 /// @return integer value that represent bit string
 ///
-int bit2decimal(char *value);
+auto bit2decimal(char *value) -> int;
 
 ///
 /// @brief Function that give an input string return toLower representation
@@ -86,7 +86,7 @@ int bit2decimal(char *value);
 /// @param strToConvert that we want manipulate
 /// @return toLower representation of input string
 ///
-std::string stringToLower(std::string strToConvert);
+auto stringToLower(std::string strToConvert) -> std::string;
 
 ///
 /// @brief Function that give an input string return toupper representation
@@ -95,10 +95,10 @@ std::string stringToLower(std::string strToConvert);
 /// @param strToConvert that we want manipulate
 /// @return toLower representation of input string
 ///
-std::string stringToUpper(std::string strToConvert);
+auto stringToUpper(std::string strToConvert) -> std::string;
 
 /// @brief Replaces old_value with new_value inside given string.
-std::string str_replace(char const *old_value, char const *new_value, std::string s);
+auto str_replace(char const *old_value, char const *new_value, std::string s) -> std::string;
 
 /// @brief Given a value, translate it as nested libraries.
 ///
@@ -106,7 +106,7 @@ std::string str_replace(char const *old_value, char const *new_value, std::strin
 /// @param skipNotFound Not found returns nullptr, instead of going into error.
 /// @return The nested libraries.
 ///
-hif::Library *resolveLibraryType(hif::Value *prefix, const bool skipNotFound = false);
+auto resolveLibraryType(hif::Value *prefix, bool skipNotFound = false) -> hif::Library *;
 
 // //////////////////////////////////////////////////////////////
 // //////////////////////////////////////////////////////////////

@@ -8,7 +8,7 @@
 
 #include <hif/hif.hpp>
 
-void performRangeRefinements(hif::System *o, const bool use_int_32, hif::semantics::VHDLSemantics *sem);
+void performRangeRefinements(hif::System *o, bool use_int_32, hif::semantics::VHDLSemantics *sem);
 
 void performStep1Refinements(hif::System *o, hif::semantics::ILanguageSemantics *sem);
 

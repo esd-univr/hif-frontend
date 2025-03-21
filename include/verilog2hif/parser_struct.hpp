@@ -76,7 +76,7 @@ struct module_or_generate_item_declaration_t {
     /// @brief Assignment operator.
     /// @param o The object to copy.
     /// @return Reference to the current object.
-    module_or_generate_item_declaration_t &operator=(const module_or_generate_item_declaration_t &o);
+    auto operator=(const module_or_generate_item_declaration_t &o) -> module_or_generate_item_declaration_t &;
 
     hif::BList<hif::Declaration> *net_declaration;      ///< List of net declarations.
     hif::BList<hif::Declaration> *reg_declaration;      ///< List of register declarations.
@@ -107,7 +107,7 @@ struct module_or_generate_item_t {
     /// @brief Assignment operator.
     /// @param o The object to copy.
     /// @return Reference to the current object.
-    module_or_generate_item_t &operator=(const module_or_generate_item_t &o);
+    auto operator=(const module_or_generate_item_t &o) -> module_or_generate_item_t &;
 
     hif::Contents *initial_construct;                    ///< Pointer to the initial construct.
     hif::BList<hif::Const> *local_parameter_declaration; ///< List of local parameter declarations.
@@ -159,7 +159,7 @@ struct block_item_declaration_t {
 
     /// @brief Get the first object.
     /// @return a pointer to the first object.
-    hif::Object *getFirstObject();
+    auto getFirstObject() const -> hif::Object *;
 };
 
 struct analog_block_item_declaration_t {
@@ -196,14 +196,14 @@ struct event_control_t {
 
     event_control_t(const event_control_t &o);
 
-    event_control_t &operator=(const event_control_t &o);
+    auto operator=(const event_control_t &o) -> event_control_t &;
 
     hif::Value *event_identifier;
     std::list<event_expression_t *> *event_expression_list;
     bool event_all;
     // TODO: * , (*)
 
-    hif::Object *getFirstObject();
+    auto getFirstObject() const -> hif::Object *;
 };
 
 struct event_expression_t {
@@ -211,7 +211,7 @@ struct event_expression_t {
 
     event_expression_t(const event_expression_t &e);
 
-    event_expression_t &operator=(const event_expression_t &e);
+    auto operator=(const event_expression_t &e) -> event_expression_t &;
 
     virtual ~event_expression_t();
 
@@ -219,7 +219,7 @@ struct event_expression_t {
     hif::Value *posedgeExpression;
     hif::Value *negedgeExpression;
 
-    hif::Object *getFirstObject();
+    auto getFirstObject() const -> hif::Object *;
 };
 
 struct analog_event_expression_t : public event_expression_t {
@@ -227,9 +227,9 @@ struct analog_event_expression_t : public event_expression_t {
 
     analog_event_expression_t(const analog_event_expression_t &a);
 
-    analog_event_expression_t &operator=(const analog_event_expression_t &a);
+    auto operator=(const analog_event_expression_t &a) -> analog_event_expression_t &;
 
-    virtual ~analog_event_expression_t();
+    ~analog_event_expression_t() override;
 
     std::list<std::string> *analysis_identifier_list;
     hif::BList<hif::Value> *or_analog_event_expression;
@@ -237,26 +237,26 @@ struct analog_event_expression_t : public event_expression_t {
     // analog_event_expression_1
     // analog_event_expression_2
 
-    hif::Object *getFirstObject();
+    auto getFirstObject() const -> hif::Object *;
 };
 
 struct analog_event_control_t : public event_control_t {
     analog_event_control_t();
-    virtual ~analog_event_control_t();
+    ~analog_event_control_t() override;
 
     analog_event_control_t(const analog_event_control_t &o);
 
-    analog_event_control_t &operator=(const analog_event_control_t &o);
+    auto operator=(const analog_event_control_t &o) -> analog_event_control_t &;
 
     analog_event_expression_t *analog_event_expression;
 
-    hif::Object *getFirstObject();
+    auto getFirstObject() const -> hif::Object *;
 };
 
 struct statement_t {
     statement_t();
     statement_t(const statement_t &e);
-    statement_t &operator=(const statement_t &e);
+    auto operator=(const statement_t &e) -> statement_t &;
 
     // ** Mutually exclusive fields **
 
@@ -285,13 +285,13 @@ struct statement_t {
     std::string blockName;
     hif::BList<hif::Declaration> *seq_block_declarations;
 
-    hif::Object *getFirstObject();
+    auto getFirstObject() const -> hif::Object *;
 };
 
 struct analog_statement_t {
     analog_statement_t();
     analog_statement_t(const analog_statement_t &e);
-    analog_statement_t &operator=(const analog_statement_t &e);
+    auto operator=(const analog_statement_t &e) -> analog_statement_t &;
 
     // ** Mutually exclusive fields **
 
@@ -316,41 +316,31 @@ struct analog_statement_t {
 
 struct procedural_timing_control_t {
     procedural_timing_control_t()
-        : delay_control(nullptr)
-        , event_control(nullptr)
-    {
-    }
 
-    hif::Value *delay_control;
-    event_control_t *event_control;
+        = default;
 
-    hif::Object *getFirstObject();
+    hif::Value *delay_control{nullptr};
+    event_control_t *event_control{nullptr};
+
+    auto getFirstObject() const -> hif::Object *;
 };
 
 struct net_ams_decl_identifier_assignment_t {
     net_ams_decl_identifier_assignment_t()
-        : identifier(nullptr)
-        , init_expression(nullptr)
-        , dimension_list(nullptr)
-    {
-    }
 
-    hif::Value *identifier;
+        = default;
+
+    hif::Value *identifier{nullptr};
 
     // mutually exclusive fields combined with the first one
-    hif::Value *init_expression;
-    hif::BList<hif::Range> *dimension_list;
+    hif::Value *init_expression{nullptr};
+    hif::BList<hif::Range> *dimension_list{nullptr};
 };
 
 struct discipline_and_modifiers_t {
     discipline_and_modifiers_t()
-        : discipline_identifier(nullptr)
-        , net_type(-1)
-        , k_signed(false)
-        , k_wreal(false)
-        , range(nullptr)
-    {
-    }
+
+        = default;
 
     discipline_and_modifiers_t(const discipline_and_modifiers_t &a)
         : discipline_identifier(hif::copy(a.discipline_identifier))
@@ -361,20 +351,17 @@ struct discipline_and_modifiers_t {
     {
     }
 
-    hif::Identifier *discipline_identifier;
-    int net_type;
-    bool k_signed;
-    bool k_wreal;
-    hif::Range *range;
+    hif::Identifier *discipline_identifier{nullptr};
+    int net_type{-1};
+    bool k_signed{false};
+    bool k_wreal{false};
+    hif::Range *range{nullptr};
 };
 
 struct discipline_identifier_signed_range_t {
     discipline_identifier_signed_range_t()
-        : discipline_identifier(nullptr)
-        , k_signed(false)
-        , range(nullptr)
-    {
-    }
+
+        = default;
 
     discipline_identifier_signed_range_t(const discipline_identifier_signed_range_t &a)
         : discipline_identifier(hif::copy(a.discipline_identifier))
@@ -383,31 +370,25 @@ struct discipline_identifier_signed_range_t {
     {
     }
 
-    hif::Identifier *discipline_identifier;
-    bool k_signed;
-    hif::Range *range;
+    hif::Identifier *discipline_identifier{nullptr};
+    bool k_signed{false};
+    hif::Range *range{nullptr};
 };
 
 struct module_instance_and_net_ams_decl_identifier_assignment_t {
     module_instance_and_net_ams_decl_identifier_assignment_t()
-        : net_ams_decl_identifier_assignment_list(nullptr)
-        , name_of_module_instance(nullptr)
-        , ams_created_variables(nullptr)
-    {
-    }
+
+        = default;
 
     module_instance_and_net_ams_decl_identifier_assignment_t(
         const module_instance_and_net_ams_decl_identifier_assignment_t &a)
-        : net_ams_decl_identifier_assignment_list(a.net_ams_decl_identifier_assignment_list)
-        , name_of_module_instance(a.name_of_module_instance)
-        , ams_created_variables(a.ams_created_variables)
-    {
-    }
 
-    std::list<net_ams_decl_identifier_assignment_t *> *net_ams_decl_identifier_assignment_list;
-    hif::Instance *name_of_module_instance;
+        = default;
 
-    hif::BList<hif::Signal> *ams_created_variables;
+    std::list<net_ams_decl_identifier_assignment_t *> *net_ams_decl_identifier_assignment_list{nullptr};
+    hif::Instance *name_of_module_instance{nullptr};
+
+    hif::BList<hif::Signal> *ams_created_variables{nullptr};
 };
 
 struct analog_function_item_declaration_t {
@@ -449,7 +430,7 @@ struct generate_block_t {
     generate_block_t();
     ~generate_block_t();
     generate_block_t(const generate_block_t &a);
-    generate_block_t &operator=(const generate_block_t &a);
+    auto operator=(const generate_block_t &a) -> generate_block_t &;
     std::string generate_block_identifier_opt;
     std::list<module_or_generate_item_t *> *module_or_generate_item_list;
 };
