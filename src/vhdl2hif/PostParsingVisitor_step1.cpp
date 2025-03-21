@@ -1073,7 +1073,7 @@ auto PostParsingVisitor_step1::fixCollectRanges() -> bool
     using RangeSet     = std::set<Range *>;
     using TrMap        = std::map<TypeReference *, RangeSet>;
     using PartitionMap = std::map<RangeSet, TypeReferenceSet>;
-    
+
     TrMap trMap;
 
     bool ret = false;

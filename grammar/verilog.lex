@@ -491,14 +491,12 @@ namespace
                      + macroname).c_str());
 
             file = hif::application_utils::hif_fmemopen( const_cast<char*>(m),
-                                 static_cast<int>(strlen(m)), "r",
-                                 _getPath(parse_line_ptr->getOutputFile()).c_str() );
+                                 static_cast<int>(strlen(m)), "r");
         }
         else
         {
             file = hif::application_utils::hif_fmemopen( i->second.value,
-                                 static_cast<int>(strlen(i->second.value)), "r",
-                                 _getPath(parse_line_ptr->getOutputFile()).c_str() );
+                                 static_cast<int>(strlen(i->second.value)), "r");
         }
 
         // Like push_buffer:
@@ -637,8 +635,7 @@ namespace
 
         // continue parsing
         FILE * file = hif::application_utils::hif_fmemopen( i->second.expanded_value,
-                                    static_cast<int>(strlen(i->second.expanded_value)), "r",
-                                    _getPath(parse_line_ptr->getOutputFile()).c_str() );
+                                    static_cast<int>(strlen(i->second.expanded_value)), "r");
 
         // Like push_buffer:
         if ( buffers.size() == 1 )

@@ -173,18 +173,16 @@ auto collectObjectMethod(Object *o, const HifQueryBase * /*unused*/) -> bool
     }
     if (dynamic_cast<Expression *>(o) != nullptr) {
         hif::semantics::ILanguageSemantics *sem = hif::semantics::VerilogSemantics::getInstance();
-        Expression *e                           = static_cast<Expression *>(o);
-        if (e->getOperator() != op_deref)
+        auto *e                                 = dynamic_cast<Expression *>(o);
+        if (e->getOperator() != op_deref) {
             return false;
+        }
 
         Type *exprType = hif::semantics::getBaseType(hif::semantics::getSemanticType(e, sem), false, sem);
         messageAssert(exprType != nullptr, "Cannot type expression", e, sem);
 
-        Event *event = dynamic_cast<Event *>(exprType);
-        if (event == nullptr)
-            return false;
-
-        return true;
+        auto *event = dynamic_cast<Event *>(exprType);
+        return event != nullptr;
     }
 
     return false;
@@ -829,7 +827,7 @@ void FixDescription_2::_collectInitialProcesses(Contents *c, InitialProcesses &i
 
 void FixDescription_2::_splitInitialProcesses(Contents *c, InitialProcesses &initialProcesses)
 {
-    for (auto st : initialProcesses) {
+    for (auto *st : initialProcesses) {
         messageAssert(st->states.size() == 1, "Unexpected number of states", st, _sem);
 
         // Move actions after first wrong statement in a new non-initial process

@@ -256,7 +256,7 @@ public:
 
     auto parse_GenerationScheme(hif::For *for_scheme) -> hif::Generate *;
 
-    auto parse_GenerationScheme(hif::Value *contdition) -> hif::Generate *;
+    auto parse_GenerationScheme(hif::Value *condition) -> hif::Generate *;
 
     auto parse_GenericClause(std::list<interface_declaration_t *> *generic_list) -> hif::BList<hif::Declaration> *;
 

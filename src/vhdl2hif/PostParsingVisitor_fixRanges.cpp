@@ -22,17 +22,17 @@ namespace /*anon*/
 class PostParsingVisitor_fixRanges : public hif::GuideVisitor
 {
 public:
-    PostParsingVisitor_fixRanges(bool use_int_32, hif::semantics::VHDLSemantics *sem);
+    PostParsingVisitor_fixRanges(bool useInt32, hif::semantics::VHDLSemantics *sem);
     ~PostParsingVisitor_fixRanges() override;
+
+    PostParsingVisitor_fixRanges(const PostParsingVisitor_fixRanges &o)                     = delete;
+    auto operator=(const PostParsingVisitor_fixRanges &o) -> PostParsingVisitor_fixRanges & = delete;
 
     auto visitFunctionCall(hif::FunctionCall &o) -> int override;
     auto visitInt(hif::Int &o) -> int override;
     auto visitLibrary(Library &o) -> int override;
 
 private:
-    PostParsingVisitor_fixRanges(const PostParsingVisitor_fixRanges &o)                     = delete;
-    auto operator=(const PostParsingVisitor_fixRanges &o) -> PostParsingVisitor_fixRanges & = delete;
-
     auto _fixTypeAttributeCall(FunctionCall *call, Type *t) -> Value *;
 
     const bool _useInt32;

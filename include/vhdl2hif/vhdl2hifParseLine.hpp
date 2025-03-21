@@ -30,7 +30,7 @@ private:
     /// @return <tt>true</tt> if the input_file is a correct VHDL source file, <tt><false/tt> otherwise.
     //  The correct shape of the VHDL source file is : file_name.vhd or file_name.vhdl.
     ///
-    static auto _checkVhdlFile(const std::string& input_file) -> bool;
+    static auto _checkVhdlFile(const std::string &input_file) -> bool;
 
     /// @brief Function to check if the source file parameter
     /// is a valid name for PSL source.
@@ -40,7 +40,7 @@ private:
     /// @return <tt>true</tt> if the input_file is a correct PSL source file, <tt><false/tt> otherwise.
     //  The correct shape of the PSL source file is : file_name.psl.
     ///
-    static auto _checkPslFile(const std::string& input_file) -> bool;
+    static auto _checkPslFile(const std::string &input_file) -> bool;
 
     /// @brief Function to extract the name of the VHDL source file.
     ///
@@ -49,5 +49,5 @@ private:
     /// @return string containing only the name of the file. If <tt>input_string</tt> is a path
     /// (e.g.: ../dir1/dir2/foo.vhd), the function returns the file name (foo.vhd).
     ///
-    static auto _cleanFileName(const std::string& input_string) -> std::string;
+    static auto _cleanFileName(const std::string &input_string) -> std::string;
 };

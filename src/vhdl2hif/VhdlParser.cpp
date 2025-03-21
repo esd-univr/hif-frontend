@@ -37,8 +37,7 @@ extern FILE *yyout; // defined in vhdlParser.cc
  * --------------------------------------------------------------------- */
 auto yylex_destroy() -> int;
 
-
-VhdlParser::VhdlParser(const string& fileName)
+VhdlParser::VhdlParser(const string &fileName)
     : _fileName(fileName)
     , _parseOnly(false)
     , _parserContext(VHDL_ctx)
@@ -67,8 +66,8 @@ VhdlParser::~VhdlParser()
     delete _is_operator_overloading;
     delete _library_list;
 
-    for (auto & i : _configurationMap) {
-        for (auto & j : i.second) {
+    for (auto &i : _configurationMap) {
+        for (auto &j : i.second) {
             delete j.first;
             delete j.second->entity_aspect.entity;
             delete j.second;
@@ -118,7 +117,7 @@ void VhdlParser::setCurrentBlockCodeInfo(Object *other)
 {
     if (other == nullptr) {
         return;
-}
+    }
 
     _tmpCustomLineNumber   = other->getSourceLineNumber();
     _tmpCustomColumnNumber = other->getSourceColumnNumber();
@@ -128,7 +127,7 @@ void VhdlParser::setCodeInfo(Object *o)
 {
     if (o == nullptr) {
         return;
-}
+    }
 
     o->setSourceFileName(_fileName);
     o->setSourceLineNumber(static_cast<unsigned int>(yylineno));
@@ -139,7 +138,7 @@ void VhdlParser::setCodeInfoFromCurrentBlock(Object *o)
 {
     if (o == nullptr) {
         return;
-}
+    }
 
     o->setSourceFileName(_fileName);
     o->setSourceLineNumber(_tmpCustomLineNumber);
@@ -174,7 +173,7 @@ void VhdlParser::addLibrary(BList<Library> *lib)
 {
     if (lib == nullptr) {
         return;
-}
+    }
 
     for (BList<Library>::iterator i = lib->begin(); i != lib->end(); ++i) {
         _library_list->push_back(hif::copy(*i));
@@ -211,8 +210,7 @@ auto VhdlParser::parse_ArchitectureBody(
     }
 
     // ** STEP 1 **
-    for (auto i = architecture_declarative_part->begin();
-         i != architecture_declarative_part->end();) {
+    for (auto i = architecture_declarative_part->begin(); i != architecture_declarative_part->end();) {
         if ((*i)->declarations != nullptr) {
             contents->declarations.merge(*((*i)->declarations));
             delete (*i)->declarations;
@@ -225,7 +223,7 @@ auto VhdlParser::parse_ArchitectureBody(
             i = architecture_declarative_part->erase(i);
         } else if ((*i)->configuration_specification != nullptr) {
             component_configuration_map_t comp_config_map;
-            auto *config_item    = new configuration_item_t();
+            auto *config_item                    = new configuration_item_t();
             config_item->component_configuration = (*i)->configuration_specification;
 
             _populateConfigurationMap(config_item, &comp_config_map);
@@ -262,10 +260,10 @@ auto VhdlParser::parse_ArchitectureBody(
     // set the list of libraries inherited from the architecture
     //
     auto *ret = new architecture_body_t();
-    for (auto & i : *architecture_declarative_part) {
+    for (auto &i : *architecture_declarative_part) {
         if (i->component_declaration == nullptr) {
             continue;
-}
+        }
 
         DesignUnit *comp = i->component_declaration;
         for (BList<View>::iterator v = comp->views.begin(); v != comp->views.end(); ++v) {
@@ -304,7 +302,7 @@ auto VhdlParser::parse_Assertion(assert_directive_t *a) -> ProcedureCall *
         p1->setValue(a->property);
     } else {
         p1->setValue(_factory.boolval(false));
-}
+    }
     ret->parameterAssigns.push_back(p1);
 
     if (a->report != nullptr) {
@@ -343,13 +341,13 @@ auto VhdlParser::parse_Aggregate(BList<AggregateAlt> *element_association_list) 
             // set the OTHERS field of the Aggregate
             ret->setOthers(hif::copy((*alt)->getValue()));
             continue;
-        }             if ((*alt)->indices.empty() && element_association_list->size() > 1) {
-                auto *intv = new IntValue(count++);
-                (*alt)->indices.push_back(intv);
-                setCodeInfo(intv);
-            }
-            ret->alts.push_back(hif::copy(*alt));
-       
+        }
+        if ((*alt)->indices.empty() && element_association_list->size() > 1) {
+            auto *intv = new IntValue(count++);
+            (*alt)->indices.push_back(intv);
+            setCodeInfo(intv);
+        }
+        ret->alts.push_back(hif::copy(*alt));
     }
 
     if (count > 0) {
@@ -382,12 +380,12 @@ auto VhdlParser::parse_BlockConfiguration(
     messageDebugAssert(block_specification->block_name != nullptr, "Unexpected case", nullptr, _sem);
 
     // for each configuration item
-    for (auto & i : *configuration_item_list) {
+    for (auto &i : *configuration_item_list) {
         _populateConfigurationMap(i, conf_map);
         delete i;
     }
 
-    auto *ret       = new block_configuration_t();
+    auto *ret                        = new block_configuration_t();
     ret->component_configuration_map = conf_map;
     ret->block_specification         = block_specification;
 
@@ -428,8 +426,7 @@ auto VhdlParser::parse_BlockStatement(
     contents_o->setGlobalAction(global);
 
     // ** STEP 1 **
-    for (auto i = block_declarative_item_list->begin();
-         i != block_declarative_item_list->end();) {
+    for (auto i = block_declarative_item_list->begin(); i != block_declarative_item_list->end();) {
         if ((*i)->declarations != nullptr) {
             contents_o->declarations.merge(*((*i)->declarations));
             delete (*i)->declarations;
@@ -492,10 +489,10 @@ auto VhdlParser::parse_BlockStatement(
     // For each Component (DesignUnit object) in 'architecture_declarative_part',
     // set the list of libraries inherited from the architecture
     //
-    for (auto & i : *block_declarative_item_list) {
+    for (auto &i : *block_declarative_item_list) {
         if (i->component_declaration == nullptr) {
             continue;
-}
+        }
 
         DesignUnit *comp = i->component_declaration;
         for (BList<View>::iterator v = comp->views.begin(); v != comp->views.end(); ++v) {
@@ -520,7 +517,7 @@ auto VhdlParser::parse_BlockStatement(
     return ret;
 }
 
-auto VhdlParser::parse_BasedLiteral(const std::string& base_lit) -> IntValue *
+auto VhdlParser::parse_BasedLiteral(const std::string &base_lit) -> IntValue *
 {
     //base
     std::string base = base_lit.substr(0, base_lit.find_first_of('#', 0));
@@ -560,22 +557,22 @@ auto VhdlParser::parse_BitStringLiteral(identifier_data_t bitString) -> hif::Bit
 
     while ((i = name.find('"')) != std::string::npos) {
         name.erase(i, 1);
-}
+    }
 
     while ((i = name.find('B')) != std::string::npos) {
         name.erase(i, 1);
-}
+    }
 
     while ((i = name.find('b')) != std::string::npos) {
         name.erase(i, 1);
-}
+    }
 
     // FROM STANDARD :
     // "An underline character inserted between adjacent digits
     // of a bit string literal does not affect the value of this literal."
     while ((i = name.find('_')) != std::string::npos) {
         name.erase(i, 1);
-}
+    }
 
     ret = new BitvectorValue(name);
     setCodeInfo(ret);
@@ -628,7 +625,7 @@ auto VhdlParser::parse_CharacterLiteral(const char *c) -> Value *
     } else {
         // General character:
         auto *ch = new CharValue(c[1]);
-        ret           = ch;
+        ret      = ch;
     }
 
     setCodeInfo(ret);
@@ -649,8 +646,8 @@ auto VhdlParser::parse_ConcurrentAssertionStatement(ProcedureCall *assertion) ->
     return ret;
 }
 
-auto
-VhdlParser::parse_ConditionalSignalAssignment(Value *target, hif::BList<hif::Assign> *conditional_waveforms) -> BList<Assign> *
+auto VhdlParser::parse_ConditionalSignalAssignment(Value *target, hif::BList<hif::Assign> *conditional_waveforms)
+    -> BList<Assign> *
 {
     for (BList<Assign>::iterator i = conditional_waveforms->begin(); i != conditional_waveforms->end(); ++i) {
         (*i)->setLeftHandSide(hif::copy(target));
@@ -667,9 +664,9 @@ auto VhdlParser::parse_ConditionalWaveforms(
 {
     if (condition != nullptr) {
         // This is a when for sure!
-        auto *ret = new hif::BList<hif::Assign>;
+        auto *ret     = new hif::BList<hif::Assign>;
         When *newWhen = this->parse_ConditionalWaveformsWhen(conditional_waveforms_when_else_list, waveform, condition);
-        auto *ass   = new Assign;
+        auto *ass     = new Assign;
         setCodeInfo(ass);
         ass->setRightHandSide(newWhen);
         ret->push_back(ass);
@@ -769,15 +766,15 @@ auto VhdlParser::parse_ConfigurationSpecification(
     return ret;
 }
 
-auto
-VhdlParser::parse_ComponentSpecification(instantiation_list_t *instantiation_list, hif::Value *name) -> component_specification_t *
+auto VhdlParser::parse_ComponentSpecification(instantiation_list_t *instantiation_list, hif::Value *name)
+    -> component_specification_t *
 {
     auto *entity_name = dynamic_cast<Identifier *>(name);
     messageAssert(entity_name != nullptr, "Expected identifier", name, _sem);
 
-    auto *ret = new component_specification_t();
-    ret->instantiation_list        = instantiation_list;
-    ret->component_name            = entity_name;
+    auto *ret               = new component_specification_t();
+    ret->instantiation_list = instantiation_list;
+    ret->component_name     = entity_name;
 
     return ret;
 }
@@ -792,7 +789,7 @@ auto VhdlParser::parse_CaseStatement(Value *expression, BList<SwitchAlt> *case_s
     messageAssert(!ret->alts.empty(), "Unexpected empty switch alt list", ret, _sem);
     // Managing the "others" case:
     SwitchAlt *sao = ret->alts.back();
-    auto *no = dynamic_cast<Identifier *>(sao->conditions.back());
+    auto *no       = dynamic_cast<Identifier *>(sao->conditions.back());
     if (no != nullptr && no->getName() == "HIF_OTHERS") {
         ret->defaults.merge(sao->actions);
         BList<SwitchAlt>::iterator i(sao);
@@ -839,15 +836,14 @@ auto VhdlParser::parse_ConstantDeclaration(
     delete type_o;
     delete subtype_indication;
 
-    
-        delete expression;
-    
+    delete expression;
 
     return ret;
 }
 
-auto
-VhdlParser::parse_ConstrainedArrayDefinition(BList<Range> *index_constraint, subtype_indication_t *subtype_indication) -> Array *
+auto VhdlParser::parse_ConstrainedArrayDefinition(
+    BList<Range> *index_constraint,
+    subtype_indication_t *subtype_indication) -> Array *
 {
     messageAssert(
         subtype_indication->type != nullptr, "Unexpected subtype indication",
@@ -899,7 +895,7 @@ auto VhdlParser::parse_Designator(Value *id) -> Identifier *
 {
     auto *identifier = dynamic_cast<Identifier *>(id);
     if (identifier == nullptr) {
-        auto *s     = dynamic_cast<StringValue *>(id);
+        auto *s  = dynamic_cast<StringValue *>(id);
         auto *bv = dynamic_cast<BitvectorValue *>(id);
         if (s == nullptr && bv == nullptr) {
             messageError("Unexpected object", id, nullptr);
@@ -910,7 +906,7 @@ auto VhdlParser::parse_Designator(Value *id) -> Identifier *
             val = s->getValue();
         } else { /*bv != nullptr*/
             val = bv->getValue();
-}
+        }
         auto i = _is_operator_overloading->find(val);
         if (i == _is_operator_overloading->end()) {
             messageError("Unexpected case", nullptr, _sem);
@@ -991,9 +987,9 @@ void VhdlParser::parse_DesignUnit(list<context_item_t *> *context_clause, librar
 
         for (auto *cItem : *context_clause) {
             messageDebugAssert(cItem->library_clause == nullptr, "Unexpected library clause", nullptr, _sem);
-            
-                delete cItem->use_clause;
-            
+
+            delete cItem->use_clause;
+
             delete cItem;
         }
     }
@@ -1033,7 +1029,7 @@ auto VhdlParser::parse_EntityAspect(Value *name, bool entity, bool configuration
     if (entity) {
         // 'name' must be a Member or a FieldReference
         // (representing which architecture is implemented)
-        auto *fc_o         = dynamic_cast<FunctionCall *>(name);
+        auto *fc_o       = dynamic_cast<FunctionCall *>(name);
         auto *fieldref_o = dynamic_cast<FieldReference *>(name);
         if (fc_o != nullptr) {
             ret         = new entity_aspect_t();
@@ -1044,7 +1040,7 @@ auto VhdlParser::parse_EntityAspect(Value *name, bool entity, bool configuration
 
             messageAssert(fc_o->parameterAssigns.size() == 1U, "Unexpected name of assigns", fc_o, _sem);
             ParameterAssign *pass = fc_o->parameterAssigns.back();
-            auto *id        = dynamic_cast<Identifier *>(pass->getValue());
+            auto *id              = dynamic_cast<Identifier *>(pass->getValue());
             messageAssert(id != nullptr, "Expected identifier", pass->getValue(), _sem);
             ret->entity->setName(id->getName());
         } else if (fieldref_o != nullptr) {
@@ -1058,7 +1054,7 @@ auto VhdlParser::parse_EntityAspect(Value *name, bool entity, bool configuration
         auto *fieldref_o = dynamic_cast<FieldReference *>(name);
         if (fieldref_o != nullptr) {
             ret                = new entity_aspect_t();
-            auto *i      = new Identifier();
+            auto *i            = new Identifier();
             ret->configuration = i;
             ret->configuration->setName(fieldref_o->getName());
         } else {
@@ -1085,7 +1081,7 @@ auto VhdlParser::parse_EntityHeader(BList<hif::Declaration> *generic_clause, BLi
             auto *valuetp_o = dynamic_cast<ValueTP *>(*i);
             if (valuetp_o == nullptr) {
                 continue;
-}
+            }
 
             ret->templateParameters.push_back(hif::copy(valuetp_o));
         }
@@ -1110,9 +1106,7 @@ auto VhdlParser::parse_ExitStatement(Identifier *identifier_colon_opt, Identifie
         delete identifier_opt;
     }
 
-    
-        delete identifier_colon_opt;
-    
+    delete identifier_colon_opt;
 
     return ret;
 }
@@ -1224,11 +1218,11 @@ auto VhdlParser::parse_FloatingOrIntegerTypeDefinition(Range *range_constraint) 
         ro->setSpan(range_constraint);
         setCodeInfo(ro);
         return ro;
-    }         Int *io = new Int();
-        io->setSpan(range_constraint);
-        setCodeInfo(io);
-        return io;
-   
+    }
+    Int *io = new Int();
+    io->setSpan(range_constraint);
+    setCodeInfo(io);
+    return io;
 }
 
 auto VhdlParser::parse_FullTypeDeclaration(Value *id, Type *type_definition) -> TypeDef *
@@ -1253,7 +1247,7 @@ auto VhdlParser::parse_FunctionCall(Value *name, BList<PortAssign> *passign_list
     messageAssert(passign_list != nullptr, "Expected param assign list", name, _sem);
     if (fc != nullptr && !passign_list->empty()) {
         Value *range_v = passign_list->back()->getValue();
-        auto *range_o = dynamic_cast<Range *>(range_v);
+        auto *range_o  = dynamic_cast<Range *>(range_v);
         if (range_o != nullptr) {
             /*
              * name(value) ( [discrete_range] )
@@ -1266,17 +1260,16 @@ auto VhdlParser::parse_FunctionCall(Value *name, BList<PortAssign> *passign_list
 
             delete passign_list;
             return slice_o;
-        }             /*
+        } /*
              * name(value) ( [value] )
              */
-            auto *ret_member_o = new Member();
-            setCodeInfo(ret_member_o);
-            ret_member_o->setPrefix(fc);
-            ret_member_o->setIndex(hif::copy(passign_list->back()->getValue()));
+        auto *ret_member_o = new Member();
+        setCodeInfo(ret_member_o);
+        ret_member_o->setPrefix(fc);
+        ret_member_o->setIndex(hif::copy(passign_list->back()->getValue()));
 
-            delete passign_list;
-            return ret_member_o;
-       
+        delete passign_list;
+        return ret_member_o;
     }
 
     auto *fieldref_o = dynamic_cast<FieldReference *>(name);
@@ -1290,7 +1283,7 @@ auto VhdlParser::parse_FunctionCall(Value *name, BList<PortAssign> *passign_list
         ret_o->setInstance(fieldref_o->setPrefix(nullptr));
         for (BList<PortAssign>::iterator i = passign_list->begin(); i != passign_list->end(); ++i) {
             PortAssign *portass = (*i);
-            auto *pa = new ParameterAssign();
+            auto *pa            = new ParameterAssign();
             setCodeInfo(pa);
             pa->setName(portass->getName());
             pa->setValue(hif::copy(portass->getValue()));
@@ -1326,7 +1319,7 @@ auto VhdlParser::parse_FunctionCall(Value *name, BList<PortAssign> *passign_list
         ret_o->setInstance(fr->setPrefix(nullptr));
         for (BList<PortAssign>::iterator i = passign_list->begin(); i != passign_list->end(); ++i) {
             PortAssign *portass = (*i);
-            auto *pa = new ParameterAssign();
+            auto *pa            = new ParameterAssign();
             setCodeInfo(pa);
             pa->setName(portass->getName());
             pa->setValue(portass->setValue(nullptr));
@@ -1439,7 +1432,7 @@ auto VhdlParser::parse_FunctionCall(Value *name, BList<PortAssign> *passign_list
          *
          */
         if (is_function) {
-            auto *n     = dynamic_cast<Identifier *>(name);
+            auto *n   = dynamic_cast<Identifier *>(name);
             auto *fco = new FunctionCall();
             setCodeInfo(fco);
             fco->setName(n->getName());
@@ -1476,7 +1469,7 @@ auto VhdlParser::parse_FunctionCall(Value *name, BList<PortAssign> *passign_list
             fco->setName(id->getName());
             for (BList<PortAssign>::iterator i = passign_list->begin(); i != passign_list->end(); ++i) {
                 PortAssign *portass = (*i);
-                auto *pa = new ParameterAssign();
+                auto *pa            = new ParameterAssign();
                 setCodeInfo(pa);
                 pa->setName(portass->getName());
                 pa->setValue(hif::copy(portass->getValue()));
@@ -1498,8 +1491,8 @@ auto VhdlParser::parse_SequenceInstance(Value *name, hif::BList<Value> *passign_
 {
     auto *pass = new BList<PortAssign>();
     for (BList<Value>::iterator i = passign_list->begin(); i != passign_list->end();) {
-        Value *v       = *i;
-        i              = i.remove();
+        Value *v = *i;
+        i        = i.remove();
         auto *pa = new PortAssign();
         setCodeInfo(pa);
         pa->setValue(v);
@@ -1528,7 +1521,7 @@ auto VhdlParser::parse_GenerateStatement(
     // ** STEP 1 **
     // Process the list of concurrent statements
     //
-    for (auto & i : *concurrent_statement_list) {
+    for (auto &i : *concurrent_statement_list) {
         if (i->signal_assignment != nullptr) {
             go->actions.merge(*i->signal_assignment);
         } else if (i->instantiation != nullptr) {
@@ -1576,7 +1569,7 @@ auto VhdlParser::parse_GenerateStatement(
     // ** STEP 2 **
     // Process the list of declarations and configurations
     //
-    for (auto & i : *block_declarative_item_list) {
+    for (auto &i : *block_declarative_item_list) {
         if (i->declarations != nullptr) {
             generation_scheme->declarations.merge(*i->declarations);
             delete i->declarations;
@@ -1729,7 +1722,7 @@ auto VhdlParser::parse_IfStatement(Value *condition, BList<Action> *sequance_of_
 auto VhdlParser::parse_IfStatementElseifList(Value *condition, BList<Action> *sequence_of_statements) -> BList<IfAlt> *
 {
     auto *ret = new BList<IfAlt>();
-    auto *cao        = new IfAlt();
+    auto *cao = new IfAlt();
     setCodeInfoFromCurrentBlock(cao);
     cao->setCondition(condition);
     cao->actions.merge(*sequence_of_statements);
@@ -1794,8 +1787,8 @@ auto VhdlParser::parse_IndexSubtypeDefinition(Value *name) -> Range *
 
 auto VhdlParser::parse_InstantiationList(hif::BList<hif::Identifier> *identifier_list) -> instantiation_list_t *
 {
-    auto *ret = new instantiation_list_t();
-    ret->identifier_list      = identifier_list;
+    auto *ret            = new instantiation_list_t();
+    ret->identifier_list = identifier_list;
 
     return ret;
 }
@@ -1831,8 +1824,8 @@ auto VhdlParser::parse_InstantiatedUnit(bool component, bool entity, Value *name
     auto *viewref_o = new ViewReference();
     setCodeInfo(viewref_o);
 
-    auto *id       = dynamic_cast<Identifier *>(name);
-    auto *fc_o   = dynamic_cast<FunctionCall *>(name);
+    auto *id   = dynamic_cast<Identifier *>(name);
+    auto *fc_o = dynamic_cast<FunctionCall *>(name);
     auto *fr_o = dynamic_cast<FieldReference *>(name);
     setCodeInfo(fc_o);
 
@@ -1876,7 +1869,7 @@ auto VhdlParser::parse_InstantiatedUnit(bool component, bool entity, Value *name
      * identifier : ENTITY library.designUnit ( architecture )
      */
     else if (fc_o != nullptr) {
-        fr_o                        = dynamic_cast<FieldReference *>(fc_o->getInstance());
+        fr_o                  = dynamic_cast<FieldReference *>(fc_o->getInstance());
         auto *architecture_id = dynamic_cast<Identifier *>(fc_o->parameterAssigns.back());
 
         if (fr_o != nullptr && architecture_id != nullptr) {
@@ -1911,7 +1904,7 @@ auto VhdlParser::parse_InstantiatedUnit(bool component, bool entity, Value *name
 
             if (arch != nullptr) {
                 viewref_o->setName(arch->getName());
-}
+            }
         }
     } else {
         messageError("Unexpected object as instantiated unit", name, nullptr);
@@ -2098,7 +2091,7 @@ auto VhdlParser::parse_IterationScheme(BList<Value> *parameter_specification) ->
     Operator stepOp = (forRange->getDirection() == dir_upto && !isTyped) ? op_plus : op_minus;
     if (isReverse) {
         stepOp = stepOp == op_plus ? op_minus : op_plus;
-}
+    }
 
     stepAc.push_back(_factory.assignment(copy(indName), _factory.expression(indName, stepOp, _factory.intval(1))));
 
@@ -2147,7 +2140,7 @@ auto VhdlParser::parse_LoopStatement(
 {
     Action *ret = nullptr;
 
-    For *for_o     = dynamic_cast<For *>(iteration_scheme_opt);
+    For *for_o    = dynamic_cast<For *>(iteration_scheme_opt);
     auto *while_o = dynamic_cast<While *>(iteration_scheme_opt);
 
     if (for_o != nullptr) {
@@ -2220,7 +2213,7 @@ auto VhdlParser::parse_NumericLiteral(Value *num, Value *unit) -> Value *
     messageAssert(u != nullptr, "Unexpected physical unit", unit, nullptr);
 
     auto *vReal = dynamic_cast<RealValue *>(num);
-    auto *vInt   = dynamic_cast<IntValue *>(num);
+    auto *vInt  = dynamic_cast<IntValue *>(num);
     messageAssert(vReal != nullptr || vInt != nullptr, "Unexpected physical value", num, _sem);
 
     std::string str(u->getName());
@@ -2253,7 +2246,7 @@ auto VhdlParser::parse_NumericLiteral(Value *num, Value *unit) -> Value *
         tu = TimeValue::time_hr;
     } else {
         messageError("Not supported unit ", u, nullptr);
-}
+    }
 
     auto *tv = new TimeValue();
     tv->setValue((vReal != nullptr) ? vReal->getValue() : static_cast<double>(vInt->getValue()));
@@ -2327,9 +2320,9 @@ auto VhdlParser::parse_ProcedureCall(Value *name) -> ProcedureCall *
         ret->setName(fo->getName());
         ret->parameterAssigns.merge(fo->parameterAssigns);
     } else if (dynamic_cast<Member *>(name) != nullptr) {
-        auto *member     = dynamic_cast<Member *>(name);
+        auto *member = dynamic_cast<Member *>(name);
         auto *pname  = dynamic_cast<Identifier *>(member->getPrefix());
-        auto *fr = dynamic_cast<FieldReference *>(member->getPrefix());
+        auto *fr     = dynamic_cast<FieldReference *>(member->getPrefix());
 
         messageAssert(pname != nullptr || fr != nullptr, "Unexpected prefix", member, _sem);
 
@@ -2351,7 +2344,7 @@ auto VhdlParser::parse_ProcedureCall(Value *name) -> ProcedureCall *
 
         if (member->getIndex() != nullptr) {
             ParameterAssign *pao = nullptr;
-            pao = new ParameterAssign();
+            pao                  = new ParameterAssign();
             pao->setValue(hif::copy(member->getIndex()));
             ret->parameterAssigns.push_back(pao);
         }
@@ -2403,7 +2396,8 @@ auto VhdlParser::parse_ProcessStatement(
     return ret;
 }
 
-auto VhdlParser::parse_Range(Value *simple_expression_left, RangeDirection direction, Value *simple_expression_right) -> Range *
+auto VhdlParser::parse_Range(Value *simple_expression_left, RangeDirection direction, Value *simple_expression_right)
+    -> Range *
 {
     auto *ret = new Range();
     setCodeInfo(ret);
@@ -2450,7 +2444,8 @@ auto VhdlParser::parse_SelectedName(Value *name, Value *suffix) -> FieldReferenc
     return fro;
 }
 
-auto VhdlParser::parse_SelectedSignalAssignment(Value *expression, Value *target, BList<WithAlt> *selected_waveforms) -> Assign *
+auto VhdlParser::parse_SelectedSignalAssignment(Value *expression, Value *target, BList<WithAlt> *selected_waveforms)
+    -> Assign *
 {
     auto *ao = new Assign();
     setCodeInfo(ao);
@@ -2493,8 +2488,10 @@ auto VhdlParser::parse_SelectedWaveformsWhen(hif::BList<hif::Assign> *waveform, 
     return ret;
 }
 
-auto
-VhdlParser::parse_SignalAssignmentStatement(Identifier *identifier_colon_opt, Value *target, BList<Assign> *waveform) -> BList<Assign> *
+auto VhdlParser::parse_SignalAssignmentStatement(
+    Identifier *identifier_colon_opt,
+    Value *target,
+    BList<Assign> *waveform) -> BList<Assign> *
 {
     messageAssert(waveform != nullptr, "Expected waveform", nullptr, _sem);
 
@@ -2508,9 +2505,7 @@ VhdlParser::parse_SignalAssignmentStatement(Identifier *identifier_colon_opt, Va
         setCodeInfo(a->getRightHandSide());
     }
 
-    
-        delete identifier_colon_opt;
-    
+    delete identifier_colon_opt;
 
     delete target;
     return waveform;
@@ -2546,8 +2541,8 @@ auto VhdlParser::parse_SignalDeclaration(
     return ret;
 }
 
-auto
-VhdlParser::parse_SignalDeclaration(BList<Identifier> *identifier_list, subtype_indication_t *subtype_indication) -> BList<Declaration> *
+auto VhdlParser::parse_SignalDeclaration(BList<Identifier> *identifier_list, subtype_indication_t *subtype_indication)
+    -> BList<Declaration> *
 {
     messageAssert(
         subtype_indication->type != nullptr, "Unexpected subtype indication",
@@ -2606,17 +2601,17 @@ auto VhdlParser::parse_StringLiteral(identifier_data_t stringLit) -> Value *
         }
         if (!is_bv) {
             break;
-}
+        }
     }
 
     if (is_bv) {
         auto *bv = new BitvectorValue(name);
         setCodeInfo(bv);
         return bv;
-    }         auto *text_o = new StringValue(name);
-        setCodeInfo(text_o);
-        return text_o;
-   
+    }
+    auto *text_o = new StringValue(name);
+    setCodeInfo(text_o);
+    return text_o;
 }
 
 auto VhdlParser::parse_SubprogramBody(
@@ -2654,7 +2649,7 @@ auto VhdlParser::parse_SubprogramSpecification(
     po->setName(designator->getName());
 
     if (formal_parameter_list_paren_opt != nullptr) {
-        for (auto & d : *formal_parameter_list_paren_opt) {
+        for (auto &d : *formal_parameter_list_paren_opt) {
             interface_declaration_t *interface_item = d;
             BList<Port> *port_list                  = nullptr;
 
@@ -2671,7 +2666,7 @@ auto VhdlParser::parse_SubprogramSpecification(
             }
 
             for (BList<Port>::iterator it = port_list->begin(); it != port_list->end(); ++it) {
-                Port *port_o       = *it;
+                Port *port_o  = *it;
                 auto *param_o = new Parameter();
 
                 param_o->setSourceFileName(port_o->getSourceFileName());
@@ -2710,7 +2705,7 @@ auto VhdlParser::parse_SubprogramSpecification(
     fo->setName(designator->getName());
 
     if (formal_parameter_list_paren_opt != nullptr) {
-        for (auto & d : *formal_parameter_list_paren_opt) {
+        for (auto &d : *formal_parameter_list_paren_opt) {
             interface_declaration_t *interface_item = d;
             BList<Port> *port_list                  = nullptr;
 
@@ -2785,11 +2780,11 @@ auto VhdlParser::parse_SubtypeIndication(Value *name, constraint_t *constraint_o
 {
     auto *ret = new subtype_indication_t();
 
-    auto *name_o    = dynamic_cast<Identifier *>(name);
-    Cast *cast_o          = dynamic_cast<Cast *>(name);
-    auto *slice_o        = dynamic_cast<Slice *>(name);
+    auto *name_o  = dynamic_cast<Identifier *>(name);
+    Cast *cast_o  = dynamic_cast<Cast *>(name);
+    auto *slice_o = dynamic_cast<Slice *>(name);
     auto *fcall_o = dynamic_cast<FunctionCall *>(name);
-    auto *fr_o  = dynamic_cast<FieldReference *>(name);
+    auto *fr_o    = dynamic_cast<FieldReference *>(name);
 
     if (fcall_o != nullptr) {
         std::string no1 = "range";
@@ -2834,7 +2829,7 @@ auto VhdlParser::parse_SubtypeIndication(Value *name, constraint_t *constraint_o
             } else if (dynamic_cast<Identifier *>(vv) != nullptr) {
                 // should be a typeref
                 auto *id = dynamic_cast<Identifier *>(vv);
-                range_o        = new Range();
+                range_o  = new Range();
                 setCodeInfo(range_o);
                 Type *tr = _resolveType(id->getName());
                 setCodeInfo(tr);
@@ -2857,8 +2852,8 @@ auto VhdlParser::parse_SubtypeIndication(Value *name, constraint_t *constraint_o
     } else if (slice_o != nullptr) {
         auto *val_list = new BList<Value>();
         val_list->push_back(slice_o->getSpan());
-        auto *id = dynamic_cast<Identifier *>(slice_o->getPrefix());
-        ret->type      = _resolveType(id->getName(), val_list);
+        auto *id  = dynamic_cast<Identifier *>(slice_o->getPrefix());
+        ret->type = _resolveType(id->getName(), val_list);
         setCodeInfo(ret->type);
     } else if (name_o != nullptr && constraint_opt != nullptr) {
         if (constraint_opt->index_constraint != nullptr) {
@@ -2900,7 +2895,7 @@ auto VhdlParser::parse_UseClause(hif::BList<hif::FieldReference> *selected_name_
         Library *library_o     = resolveLibraryType(name_o);
         if (library_o == nullptr) {
             continue;
-}
+        }
         setCodeInfo(library_o);
         _factory.codeInfo(library_o, library_o->getSourceFileName(), library_o->getSourceLineNumber());
 
@@ -2953,8 +2948,8 @@ auto VhdlParser::parse_VariableDeclaration(
     return ret;
 }
 
-auto
-VhdlParser::parse_VariableDeclaration(BList<Identifier> *identifier_list, subtype_indication_t *subtype_indication) -> BList<Declaration> *
+auto VhdlParser::parse_VariableDeclaration(BList<Identifier> *identifier_list, subtype_indication_t *subtype_indication)
+    -> BList<Declaration> *
 {
     messageAssert(
         subtype_indication->type != nullptr, "Unexpected subtype indication",
@@ -2996,7 +2991,8 @@ auto VhdlParser::parse_ActualParameterPart(BList<PortAssign> *association_list) 
     return ret;
 }
 
-auto VhdlParser::parse_AliasDeclaration(Identifier *designator, subtype_indication_t *subtype_indication, Value *name) -> Alias *
+auto VhdlParser::parse_AliasDeclaration(Identifier *designator, subtype_indication_t *subtype_indication, Value *name)
+    -> Alias *
 {
     messageAssert(
         subtype_indication->type != nullptr, "Unexpected subtype indication",
@@ -3050,9 +3046,9 @@ auto VhdlParser::parse_AssociationElement(Value *formal_part, Value *actual_part
     PortAssign *ret = parse_AssociationElement(actual_part);
     setCodeInfo(ret);
     auto *name_o = dynamic_cast<Identifier *>(formal_part);
-    auto *memb_o     = dynamic_cast<Member *>(formal_part);
-    auto *fc_o = dynamic_cast<FunctionCall *>(formal_part);
-    auto *slice       = dynamic_cast<Slice *>(formal_part);
+    auto *memb_o = dynamic_cast<Member *>(formal_part);
+    auto *fc_o   = dynamic_cast<FunctionCall *>(formal_part);
+    auto *slice  = dynamic_cast<Slice *>(formal_part);
     if (name_o != nullptr) {
         ret->setName(name_o->getName());
     } else if (memb_o != nullptr) {
@@ -3061,7 +3057,7 @@ auto VhdlParser::parse_AssociationElement(Value *formal_part, Value *actual_part
             ret->setName(name_o->getName());
         } else {
             messageError("Unsupported member association_element.", formal_part, _sem);
-}
+        }
 
         ret->setPartialBind(memb_o->setIndex(nullptr));
     } else if (fc_o != nullptr) {
@@ -3077,7 +3073,7 @@ auto VhdlParser::parse_AssociationElement(Value *formal_part, Value *actual_part
             ret->setName(name_o->getName());
         } else {
             messageError("Unsupported member association_element.", formal_part, _sem);
-}
+        }
 
         ret->setPartialBind(slice->setSpan(nullptr));
     } else {
@@ -3131,7 +3127,8 @@ auto VhdlParser::parse_ElementAssociation(Value *expression) -> AggregateAlt *
     return aggregateAlt_o;
 }
 
-auto VhdlParser::parse_ElementDeclaration(BList<Identifier> *identifier_list, Type *element_subtype_definition) -> BList<Field> *
+auto VhdlParser::parse_ElementDeclaration(BList<Identifier> *identifier_list, Type *element_subtype_definition)
+    -> BList<Field> *
 {
     auto *ret = new BList<Field>();
 
@@ -3177,7 +3174,7 @@ auto VhdlParser::parse_EntityDeclaration(
     entity_header->setLanguageID(hif::rtl);
     setCodeInfoFromCurrentBlock(entity_header);
 
-    for (auto & i : *entity_declarative_part) {
+    for (auto &i : *entity_declarative_part) {
         if (i->constant_declaration != nullptr) {
             entity_header->declarations.merge(*i->constant_declaration);
             delete i->constant_declaration;
@@ -3305,7 +3302,7 @@ auto VhdlParser::parse_ParameterSpecification(Value *id, Range *discrete_range) 
     Operator stepOp = (discrete_range->getDirection() == dir_upto && !isTyped) ? op_plus : op_minus;
     if (isReverse) {
         stepOp = stepOp == op_plus ? op_minus : op_plus;
-}
+    }
 
     Expression *expr = _factory.expression(identifier, stepOp, _factory.intval(1));
     setCodeInfo(expr);
@@ -3392,7 +3389,7 @@ auto VhdlParser::parse_HdlModuleName(Value *entityIdentifier, Value *viewIdentif
     auto *entityName = dynamic_cast<Identifier *>(entityIdentifier);
     if (entityName == nullptr) {
         messageError("Unexpected entity identifier", entityName, nullptr);
-}
+    }
 
     auto *ret = new ViewReference();
     ret->setDesignUnit(entityName->getName());
@@ -3401,7 +3398,7 @@ auto VhdlParser::parse_HdlModuleName(Value *entityIdentifier, Value *viewIdentif
         auto *viewName = dynamic_cast<Identifier *>(viewIdentifier);
         if (viewName == nullptr) {
             messageError("Unexpected view identifier", viewName, nullptr);
-}
+        }
 
         ret->setName(viewName->getName());
     }
@@ -3490,8 +3487,10 @@ auto VhdlParser::parse_ComponentConfiguration(
     return ret;
 }
 
-auto
-VhdlParser::parse_ComponentDeclaration(Value *id, BList<Declaration> *generic_clause_opt, BList<Port> *port_clause_opt) -> DesignUnit *
+auto VhdlParser::parse_ComponentDeclaration(
+    Value *id,
+    BList<Declaration> *generic_clause_opt,
+    BList<Port> *port_clause_opt) -> DesignUnit *
 {
     auto *identifier = dynamic_cast<Identifier *>(id);
     messageAssert(identifier != nullptr, "Expected identifier", id, _sem);
@@ -3513,7 +3512,7 @@ VhdlParser::parse_ComponentDeclaration(Value *id, BList<Declaration> *generic_cl
             auto *valuetp_o = dynamic_cast<ValueTP *>(*i);
             if (valuetp_o == nullptr) {
                 continue;
-}
+            }
 
             view_o->templateParameters.push_back(hif::copy(valuetp_o));
         }
@@ -3713,7 +3712,8 @@ auto VhdlParser::resolveType(
         bit_o->setLogic(false);
         bit_o->setResolved(false);
         return bit_o;
-    } if (type_ref == "integer") {
+    }
+    if (type_ref == "integer") {
         Int *io = new Int();
         io->setSigned(true);
 
@@ -3727,19 +3727,21 @@ auto VhdlParser::resolveType(
             io->setSpan(nr);
         }
 
-        if (ro == nullptr || ((lbound_o != nullptr) && lbound_o->getValue() < 0) || ((rbound_o != nullptr) && rbound_o->getValue() < 0)) {
+        if (ro == nullptr || ((lbound_o != nullptr) && lbound_o->getValue() < 0) ||
+            ((rbound_o != nullptr) && rbound_o->getValue() < 0)) {
             io->setSigned(true);
         }
 
-         {
+        {
             delete lbound_o;
-}
-         {
+        }
+        {
             delete rbound_o;
-}
+        }
 
         return io;
-    } if (type_ref.compare("natural") == 0) {
+    }
+    if (type_ref.compare("natural") == 0) {
         Int *int_o = new Int();
         int_o->setSigned(false);
 
@@ -4012,7 +4014,7 @@ auto VhdlParser::parse_DiscreteRange(subtype_indication_t *subtype_indication) -
         if (dynamic_cast<TypeReference *>(subtype_indication->type) != nullptr) {
             // Create a typed range
             auto *tr = dynamic_cast<TypeReference *>(subtype_indication->type);
-            range_o           = new Range();
+            range_o  = new Range();
             range_o->setType(hif::copy(tr));
         } else {
             range_o = hif::copy(hif::typeGetSpan(subtype_indication->type, _sem));

@@ -13,7 +13,6 @@
 class Verilog2hifParseLine : public hif::application_utils::CommandLineParser
 {
 public:
-
     /// @brief Constructor for the Verilog2hifParseLine class.
     /// @param argc number of arguments.
     /// @param argv array of arguments.
@@ -24,7 +23,7 @@ public:
 
     /// @brief Function to get the Verilog-AMS source file.
     /// @return Files object containing the Verilog-AMS source file.
-    Files getAmsFiles();
+    auto getAmsFiles() -> Files;
 
     /// @brief If the user whants to consider ternary operators without 'X' and
     /// 'Z' cases.
@@ -40,7 +39,6 @@ public:
     auto getStructure() const -> bool;
 
 protected:
-
     /// @brief Validates and configures the arguments.
     void _validateArguments();
 

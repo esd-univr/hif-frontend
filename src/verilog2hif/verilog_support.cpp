@@ -104,7 +104,7 @@ auto concat(BList<Value> &values) -> Value *
  * @param numbit    number of bits representing the int value
  * @return the bynary representation
  */
-auto convertToBinary(const string& number, int numBits) -> string
+auto convertToBinary(const string &number, int numBits) -> string
 {
     int temp = atoi(number.c_str());
     return convertToBinary(temp, numBits);
@@ -112,7 +112,7 @@ auto convertToBinary(const string& number, int numBits) -> string
 
 auto convertToBinary(int number, int numBits) -> string
 {
-    int count           = 0;
+    int count = 0;
     string binaryNumber;
 
     while (count < numBits) {
@@ -120,7 +120,7 @@ auto convertToBinary(int number, int numBits) -> string
             binaryNumber.append("0");
         } else {
             binaryNumber.append("1");
-}
+        }
 
         number = number / 2;
         count++;
@@ -156,7 +156,7 @@ void clean_bitvalues(SwitchAlt *c, const bool x)
 
         // Bitvector
         if (dynamic_cast<BitvectorValue *>(*i) != nullptr) {
-            auto *b                = dynamic_cast<BitvectorValue *>(*i);
+            auto *b                          = dynamic_cast<BitvectorValue *>(*i);
             std::string v                    = b->getValue();
             const std::string::size_type len = v.size();
             for (std::string::size_type s = 0; s < len; ++s) {
@@ -193,7 +193,7 @@ auto getSemanticType(Range *ro, bool is_signed) -> Type *
     } else {
         if (is_signed) {
             yywarning("Signed directive is ignored on single bits.");
-}
+        }
         Bit *bo = makeVerilogBitType();
         to      = bo;
     }

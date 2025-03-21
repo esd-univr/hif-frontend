@@ -105,9 +105,9 @@ auto hex2bits(char hex) -> std::string
     return "";
 }
 
-auto dec2bits(const std::string& dec) -> std::string
+auto dec2bits(const std::string &dec) -> std::string
 {
-    int i = 0;
+    int i    = 0;
     int orig = atoi(dec.c_str());
     std::string result;
     while (orig > 0) {
@@ -213,8 +213,8 @@ auto toBits(const char *value, int base) -> std::string
 
 auto fro2string(Value *vo) -> std::string
 {
-    auto *fieldref_o = dynamic_cast<FieldReference *>(vo);
-    auto *identifier_o   = dynamic_cast<Identifier *>(vo);
+    auto *fieldref_o   = dynamic_cast<FieldReference *>(vo);
+    auto *identifier_o = dynamic_cast<Identifier *>(vo);
 
     if (fieldref_o != nullptr) {
         string name = string(".") + string(fieldref_o->getName());
@@ -268,15 +268,15 @@ auto resolveLibraryType(Value *prefix, const bool skipNotFound) -> Library *
 {
     if (prefix == nullptr) {
         return nullptr;
-}
+    }
 
     Library *reference = nullptr;
     Library *ret       = nullptr;
 
     do {
-        auto *id      = dynamic_cast<Identifier *>(prefix);
-        auto *ffr = dynamic_cast<FieldReference *>(prefix);
-        auto *inst      = dynamic_cast<Instance *>(prefix);
+        auto *id   = dynamic_cast<Identifier *>(prefix);
+        auto *ffr  = dynamic_cast<FieldReference *>(prefix);
+        auto *inst = dynamic_cast<Instance *>(prefix);
         if (skipNotFound && id == nullptr && ffr == nullptr && inst == nullptr) {
             return nullptr;
         }
@@ -301,7 +301,7 @@ auto resolveLibraryType(Value *prefix, const bool skipNotFound) -> Library *
 
                 if (reference != nullptr) {
                     reference->setInstance(lib);
-}
+                }
                 reference = lib;
             }
             prefix = nullptr;
@@ -311,7 +311,7 @@ auto resolveLibraryType(Value *prefix, const bool skipNotFound) -> Library *
             inst->setReferencedType(nullptr);
             if (reference != nullptr) {
                 reference->setInstance(lib);
-}
+            }
             reference = lib;
             prefix    = nullptr;
         } else // ffr != nullptr
@@ -322,7 +322,7 @@ auto resolveLibraryType(Value *prefix, const bool skipNotFound) -> Library *
                 lib->setName(ffr->getName());
                 if (reference != nullptr) {
                     reference->setInstance(lib);
-}
+                }
                 reference = lib;
             }
             prefix = ffr->getPrefix();
@@ -330,7 +330,7 @@ auto resolveLibraryType(Value *prefix, const bool skipNotFound) -> Library *
 
         if (ret == nullptr) {
             ret = reference;
-}
+        }
     } while (prefix != nullptr);
 
     return ret;

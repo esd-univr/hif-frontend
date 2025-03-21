@@ -599,7 +599,7 @@ void fillInfoMap(RefMap &refMap, InfoMap &infoMap, const bool removeProperty)
 
         // For each interesting symbol check the context and push it into the
         // related list.
-        for (auto symb : i.second) {
+        for (auto *symb : i.second) {
             auto *ass  = hif::getNearestParent<Assign>(symb);
             Wait *wait = hif::getNearestParent<Wait>(symb);
             ObjectSensitivityOptions opts;
@@ -1240,7 +1240,7 @@ void refineToVariables(
             decl->replace(var);
             delete decl;
 
-            for (auto reference : refMap[decl]) {
+            for (auto *reference : refMap[decl]) {
                 hif::semantics::setDeclaration(reference, var);
             }
         } else // (isVariable && isSignal) || isOutputPort
@@ -1263,7 +1263,7 @@ void refineToVariables(
 
             messageAssert(infos.lhsContinuousUsing.empty(), "Unexpected lhs of continuous", decl, sem);
 
-            for (auto ref : infos.lhsBlockingUsing) {
+            for (auto *ref : infos.lhsBlockingUsing) {
                 // 1- sig = expr  -->
                 // var[5] = expr;
                 // sig[5] <= var[5]; // only if is not inside cone
@@ -1308,7 +1308,7 @@ void refineToVariables(
             readUsing.insert(infos.readUsing.begin(), infos.readUsing.end());
             readUsing.insert(infos.rhsContinuousUsing.begin(), infos.rhsContinuousUsing.end());
 
-            for (auto ref : readUsing) {
+            for (auto *ref : readUsing) {
                 // Replace sig with var
 
                 hif::objectSetName(ref, varName);
@@ -1372,7 +1372,7 @@ void refineToVariables(
                         conesMap[decl]->getName(), nullptr, f.noTemplateArguments(), f.noParameterArguments()));
                 }
 
-                for (auto k : sensMap[decl]) {
+                for (auto *k : sensMap[decl]) {
                     process->sensitivity.push_back(f.identifier(k->getName()));
                 }
                 BaseContents *bc = getBaseContents(decl);
@@ -1416,7 +1416,7 @@ void collectOnOutputPorts(RefMap &refMap, hif::semantics::ILanguageSemantics * /
             continue;
         }
 
-        for (auto symb : i.second) {
+        for (auto *symb : i.second) {
             auto *portAss = dynamic_cast<PortAssign *>(symb);
             if (portAss != nullptr) {
                 continue;

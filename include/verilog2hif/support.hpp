@@ -92,7 +92,7 @@ auto getSemanticType(hif::Range *ro, bool is_signed = false) -> hif::Type *;
 /// @param number the value to convert.
 /// @param numbit the number of bits of the bitvector.
 /// @return A string representing the bitvector.
-auto convertToBinary(const std::string& number, int numbit) -> std::string;
+auto convertToBinary(const std::string &number, int numbit) -> std::string;
 
 /// @brief Converts the given value to a bitvector.
 /// @param number the value to convert.
@@ -105,7 +105,7 @@ auto convertToBinary(int number, int numbit) -> std::string;
 /// @param x if true, x is transformed into dontcare.
 void clean_bitvalues(hif::SwitchAlt *c, bool x);
 
-/// @brief Casts a BList of Parent_t to a BList of Child_t. 
+/// @brief Casts a BList of Parent_t to a BList of Child_t.
 /// @tparam Child_t the type of the child.
 /// @tparam Parent_t the type of the parent.
 /// @param p list to cast.

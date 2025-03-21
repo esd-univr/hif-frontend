@@ -13,8 +13,8 @@
 #include <algorithm>
 #include <cmath>
 
-#include "verilog2hif/verilog_parser.hpp"
 #include "verilog2hif/support.hpp"
+#include "verilog2hif/verilog_parser.hpp"
 
 using namespace hif;
 using std::list;
@@ -30,7 +30,7 @@ extern auto init_buffer(const char *fname) -> bool;
 auto yylex_destroy() -> int;
 auto yyparse(VerilogParser *parser) -> int;
 
-VerilogParser::VerilogParser(const string& fileName, const Verilog2hifParseLine &cLine)
+VerilogParser::VerilogParser(const string &fileName, const Verilog2hifParseLine &cLine)
     : _fileName(fileName)
     , _tmpCustomLineNumber(0)
     , _tmpCustomColumnNumber(0)
@@ -58,7 +58,7 @@ auto VerilogParser::parse(bool parseOnly) -> bool
 
     if (!init_buffer(_fileName.c_str())) {
         return false;
-}
+    }
 
     // Parser entry-point
     yyparse(this);
@@ -74,7 +74,7 @@ void VerilogParser::setCodeInfo(Object *o, bool recursive)
 {
     if (o == nullptr) {
         return;
-}
+    }
 
     o->setSourceFileName(_fileName);
     o->setSourceLineNumber(yylineno);
@@ -89,7 +89,7 @@ void VerilogParser::setCodeInfo(Object *o, keyword_data_t &keyword)
 {
     if (o == nullptr) {
         return;
-}
+    }
 
     o->setSourceFileName(_fileName);
     o->setSourceLineNumber(keyword.line);
@@ -106,7 +106,7 @@ void VerilogParser::setCurrentBlockCodeInfo(Object *other)
 {
     if (other == nullptr) {
         return;
-}
+    }
 
     _tmpCustomLineNumber   = other->getSourceLineNumber();
     _tmpCustomColumnNumber = other->getSourceColumnNumber();
@@ -116,7 +116,7 @@ void VerilogParser::setCodeInfoFromCurrentBlock(Object *o)
 {
     if (o == nullptr) {
         return;
-}
+    }
 
     o->setSourceFileName(_fileName);
     o->setSourceLineNumber(_tmpCustomLineNumber);
@@ -140,7 +140,7 @@ auto VerilogParser::parse_Identifier(char *identifier) -> Identifier *
 auto VerilogParser::parse_ModuleDeclarationStart(char *identifier) -> DesignUnit *
 {
     auto *designUnit_o = new DesignUnit();
-    View *view_o             = new View();
+    View *view_o       = new View();
 
     // Setting eventual timescale
     if (_unit != nullptr && _precision != nullptr) {
@@ -151,7 +151,7 @@ auto VerilogParser::parse_ModuleDeclarationStart(char *identifier) -> DesignUnit
             _factory.constant(_factory.time(), "hif_verilog_timescale_precision", hif::copy(_precision)));
     }
 
-    auto *iface_o      = new Entity();
+    auto *iface_o    = new Entity();
     auto *contents_o = new Contents();
 
     setCodeInfoFromCurrentBlock(designUnit_o);
@@ -198,7 +198,7 @@ void VerilogParser::parse_ModuleDeclaration(
 
     Contents *contents_o = view_o->getContents();
     // for each module item
-    for (auto & i : *module_item_list) {
+    for (auto &i : *module_item_list) {
         if (i->port_declaration_identifiers != nullptr) {
             BList<Declaration> *decl_list = blist_scast<Declaration>(i->port_declaration_identifiers);
             contents_o->declarations.merge(*decl_list);
@@ -284,10 +284,10 @@ void VerilogParser::parse_ModuleDeclaration(
 
                 delete decl;
                 continue;
-            }                 if (found->getType() != nullptr) {
-                    port_o->setType(_composeAmsType(port_o->setType(nullptr), found->setType(nullptr)));
-}
-           
+            }
+            if (found->getType() != nullptr) {
+                port_o->setType(_composeAmsType(port_o->setType(nullptr), found->setType(nullptr)));
+            }
 
             it = it.remove();
             found->replace(port_o);
@@ -402,12 +402,12 @@ auto VerilogParser::parse_InitialConstruct(statement_t *statement) -> Contents *
     return contents;
 }
 
-auto
-VerilogParser::parse_BlockingAssignment(Value *variable_lvalue, Value *expression, Value *delay_or_event_control) -> Assign *
+auto VerilogParser::parse_BlockingAssignment(Value *variable_lvalue, Value *expression, Value *delay_or_event_control)
+    -> Assign *
 {
     if (variable_lvalue == nullptr || expression == nullptr) {
         return nullptr;
-}
+    }
 
     auto *assign_o = new Assign();
     setCodeInfo(assign_o);
@@ -419,8 +419,10 @@ VerilogParser::parse_BlockingAssignment(Value *variable_lvalue, Value *expressio
     return assign_o;
 }
 
-auto
-VerilogParser::parse_NonBlockingAssignment(Value *variable_lvalue, Value *expression, Value *delay_or_event_control) -> Assign *
+auto VerilogParser::parse_NonBlockingAssignment(
+    Value *variable_lvalue,
+    Value *expression,
+    Value *delay_or_event_control) -> Assign *
 {
     Assign *assign_o = parse_BlockingAssignment(variable_lvalue, expression, delay_or_event_control);
     assign_o->addProperty(NONBLOCKING_ASSIGNMENT);
@@ -437,7 +439,7 @@ auto VerilogParser::parse_AlwaysConstruct(statement_t *statement) -> StateTable 
         stateTable_o->setName(NameTable::getInstance()->getFreshName("process"));
     } else {
         stateTable_o->setName(statement->blockName);
-}
+    }
 
     auto *state_o = new State();
     setCodeInfoFromCurrentBlock(state_o);
@@ -488,7 +490,7 @@ auto VerilogParser::parse_AlwaysConstruct(statement_t *statement) -> StateTable 
             it = it.erase();
         } else {
             ++it;
-}
+        }
     }
 
     return stateTable_o;
@@ -504,7 +506,7 @@ auto VerilogParser::parse_AnalogConstruct(analog_statement_t *statement) -> Stat
         stateTable_o->setName(NameTable::getInstance()->getFreshName("process"));
     } else {
         stateTable_o->setName(statement->blockName);
-}
+    }
 
     //stateTable_o->setDontInitialize(true);
     stateTable_o->setDontInitialize(false);
@@ -544,7 +546,7 @@ auto VerilogParser::parse_ContinuousAssign(Value *delay3_opt, BList<Assign> *lis
 {
     if (delay3_opt == nullptr) {
         return list_of_net_assignments;
-}
+    }
 
     for (BList<Assign>::iterator i = list_of_net_assignments->begin(); i != list_of_net_assignments->end(); ++i) {
         Assign *ass = *i;
@@ -617,8 +619,8 @@ auto VerilogParser::parse_BranchTerminal(char *identifier, Value *range_expressi
     return member_o;
 }
 
-auto
-VerilogParser::parse_InoutDeclaration(discipline_and_modifiers_t *discipline_and_modifiers, Identifier *identifier) -> Port *
+auto VerilogParser::parse_InoutDeclaration(discipline_and_modifiers_t *discipline_and_modifiers, Identifier *identifier)
+    -> Port *
 {
     messageAssert(
         discipline_and_modifiers->discipline_identifier == nullptr,
@@ -654,7 +656,7 @@ auto VerilogParser::parse_InoutDeclaration(
         nullptr);
 
     discipline_and_modifiers_t *d = nullptr;
-    auto *ret              = new BList<Port>();
+    auto *ret                     = new BList<Port>();
 
     // for each identifier
     for (BList<Identifier>::iterator i = list_of_identifiers->begin(); i != list_of_identifiers->end();) {
@@ -673,8 +675,8 @@ auto VerilogParser::parse_InoutDeclaration(
     return ret;
 }
 
-auto
-VerilogParser::parse_InputDeclaration(discipline_and_modifiers_t *discipline_and_modifiers, Identifier *identifier) -> Port *
+auto VerilogParser::parse_InputDeclaration(discipline_and_modifiers_t *discipline_and_modifiers, Identifier *identifier)
+    -> Port *
 {
     messageAssert(
         discipline_and_modifiers->discipline_identifier == nullptr,
@@ -691,7 +693,7 @@ VerilogParser::parse_InputDeclaration(discipline_and_modifiers_t *discipline_and
         port->setType(makeVerilogBitType());
         if (discipline_and_modifiers->k_signed) {
             yywarning("Signed directive is ignored.");
-}
+        }
     } else {
         auto *arr = new Bitvector();
         if (discipline_and_modifiers->range != nullptr) {
@@ -719,7 +721,7 @@ auto VerilogParser::parse_InputDeclaration(
         "Discipline identifier is not supported (Verilog-AMS)", discipline_and_modifiers->discipline_identifier,
         nullptr);
 
-    auto *ret = new BList<Port>();
+    auto *ret                     = new BList<Port>();
     discipline_and_modifiers_t *d = nullptr;
 
     // for each identifier
@@ -739,8 +741,9 @@ auto VerilogParser::parse_InputDeclaration(
     return ret;
 }
 
-auto
-VerilogParser::parse_OutputDeclaration(discipline_and_modifiers_t *discipline_and_modifiers, Identifier *identifier) -> Port *
+auto VerilogParser::parse_OutputDeclaration(
+    discipline_and_modifiers_t *discipline_and_modifiers,
+    Identifier *identifier) -> Port *
 {
     messageAssert(
         discipline_and_modifiers->discipline_identifier == nullptr,
@@ -761,8 +764,12 @@ VerilogParser::parse_OutputDeclaration(discipline_and_modifiers_t *discipline_an
     return port;
 }
 
-auto
-VerilogParser::parse_OutputDeclaration(bool k_signed, Range *range, char *identifier, Value *initVal, const bool isReg) -> Port *
+auto VerilogParser::parse_OutputDeclaration(
+    bool k_signed,
+    Range *range,
+    char *identifier,
+    Value *initVal,
+    const bool isReg) -> Port *
 {
     Port *port_o = new Port();
     setCodeInfo(port_o);
@@ -804,7 +811,7 @@ auto VerilogParser::parse_OutputDeclaration(
         "Discipline identifier is not supported (Verilog-AMS)", discipline_and_modifiers->discipline_identifier,
         nullptr);
 
-    auto *ret = new BList<Port>();
+    auto *ret                     = new BList<Port>();
     discipline_and_modifiers_t *d = nullptr;
 
     // for each identifier
@@ -823,8 +830,8 @@ auto VerilogParser::parse_OutputDeclaration(
     return ret;
 }
 
-auto
-VerilogParser::parse_OutputDeclaration(Type *output_variable_type, BList<Port> *list_of_variable_port_identifiers) -> BList<Port> *
+auto VerilogParser::parse_OutputDeclaration(Type *output_variable_type, BList<Port> *list_of_variable_port_identifiers)
+    -> BList<Port> *
 {
     // for each identifier
     for (BList<Port>::iterator i = list_of_variable_port_identifiers->begin();
@@ -838,7 +845,7 @@ VerilogParser::parse_OutputDeclaration(Type *output_variable_type, BList<Port> *
 
             if (constValue_o == nullptr) {
                 constValue_o = dynamic_cast<ConstValue *>((*i)->getValue());
-}
+            }
         }
 
         (*i)->setValue(constValue_o);
@@ -865,7 +872,7 @@ auto VerilogParser::parse_OutputDeclaration(
 
             if (constValue_o == nullptr) {
                 constValue_o = dynamic_cast<ConstValue *>((*i)->getValue());
-}
+            }
         }
 
         (*i)->setValue(constValue_o);
@@ -893,17 +900,17 @@ auto VerilogParser::parse_VariablePortIdentifier(char *identifier, Value *initVa
 auto VerilogParser::parse_EventIdentifier(char *identifier, hif::BList<Range> *dimension_list) -> Variable *
 {
     Variable *v = nullptr;
-    v = new Variable();
+    v           = new Variable();
     setCodeInfo(v);
     v->setName(identifier);
 
     if (dimension_list != nullptr && !dimension_list->empty()) {
         auto *array_prev = new Array();
-        Range *range_o    = dimension_list->at(dimension_list->size() - 1);
+        Range *range_o   = dimension_list->at(dimension_list->size() - 1);
         array_prev->setSpan(hif::copy(range_o));
 
         for (int i = dimension_list->size() - 1; i >= 0; i--) {
-            range_o    = hif::copy(dimension_list->at(i));
+            range_o   = hif::copy(dimension_list->at(i));
             auto *tmp = new Array();
             tmp->setSpan(range_o);
             tmp->setType(array_prev);
@@ -925,8 +932,8 @@ auto VerilogParser::parse_LocalParameterDeclaration(
     BList<Assign> *list_of_param_assignments,
     hif::Type *parameter_type) -> BList<Const> *
 {
-    auto *valueTpList  = parse_ParameterDeclaration(K_signed_opt, range_opt, list_of_param_assignments, parameter_type);
-    auto *ret = new BList<Const>();
+    auto *valueTpList = parse_ParameterDeclaration(K_signed_opt, range_opt, list_of_param_assignments, parameter_type);
+    auto *ret         = new BList<Const>();
     for (auto *vtp : *valueTpList) {
         auto *c = new Const();
         c->setName(vtp->getName());
@@ -937,7 +944,7 @@ auto VerilogParser::parse_LocalParameterDeclaration(
             auto *cv = dynamic_cast<ConstValue *>(c->getValue());
             if (cv != nullptr) {
                 c->setType(_sem->getTypeForConstant(cv));
-}
+            }
         }
         ret->push_back(c);
     }
@@ -960,8 +967,8 @@ auto VerilogParser::parse_ParameterDeclaration(
             Assign *par_o = *it;
             it            = it.remove();
 
-            Value *prefix    = hif::getTerminalPrefix(par_o->getLeftHandSide());
-            auto *name = dynamic_cast<Identifier *>(prefix);
+            Value *prefix = hif::getTerminalPrefix(par_o->getLeftHandSide());
+            auto *name    = dynamic_cast<Identifier *>(prefix);
             messageAssert(name != nullptr, "Unexpected prefix", prefix, _sem);
 
             valuetp_o = new ValueTP();
@@ -970,7 +977,7 @@ auto VerilogParser::parse_ParameterDeclaration(
             Type *t = hif::copy(parameter_type);
             if (k_signed) {
                 hif::typeSetSigned(t, k_signed, _sem);
-}
+            }
             auto *tmp = dynamic_cast<Slice *>(par_o->getLeftHandSide());
             while (tmp != nullptr) {
                 auto *a = new Array();
@@ -993,8 +1000,8 @@ auto VerilogParser::parse_ParameterDeclaration(
             Assign *par_o = *it;
             it            = it.remove();
 
-            Value *prefix    = hif::getTerminalPrefix(par_o->getLeftHandSide());
-            auto *name = dynamic_cast<Identifier *>(prefix);
+            Value *prefix = hif::getTerminalPrefix(par_o->getLeftHandSide());
+            auto *name    = dynamic_cast<Identifier *>(prefix);
             messageAssert(name != nullptr, "Unexpected prefix", prefix, _sem);
 
             auto *valuetp_o = new ValueTP();
@@ -1002,7 +1009,7 @@ auto VerilogParser::parse_ParameterDeclaration(
             valuetp_o->setName(name->getName());
             valuetp_o->setValue(hif::copy(par_o->getRightHandSide()));
 
-            Type *t    = getSemanticType(range, k_signed);
+            Type *t   = getSemanticType(range, k_signed);
             auto *tmp = dynamic_cast<Slice *>(par_o->getLeftHandSide());
             while (tmp != nullptr) {
                 auto *a = new Array();
@@ -1074,21 +1081,21 @@ auto VerilogParser::parse_Range(Value *lbound, Value *rbound) -> Range *
         delete t;
     }
 
-    bool in1_expr    = false;
-    bool in2_expr    = false;
-    long long int in = 0;
+    bool in1_expr     = false;
+    bool in2_expr     = false;
+    long long int in  = 0;
     long long int in2 = 0;
 
     if (dynamic_cast<IntValue *>(ro->getLeftBound()) != nullptr) {
         auto *io = dynamic_cast<IntValue *>(ro->getLeftBound());
-        in           = io->getValue();
+        in       = io->getValue();
     } else {
         in1_expr = true;
     }
 
     if (dynamic_cast<IntValue *>(ro->getRightBound()) != nullptr) {
         auto *in2valob = dynamic_cast<IntValue *>(ro->getRightBound());
-        in2                = in2valob->getValue();
+        in2            = in2valob->getValue();
     } else {
         in2_expr = true;
     }
@@ -1112,7 +1119,7 @@ auto VerilogParser::parse_ExpressionUnaryOperator(Operator unary_op, Value *prim
 {
     if (primary == nullptr) {
         return nullptr;
-}
+    }
 
     auto *op = new Expression();
     setCodeInfo(op);
@@ -1136,7 +1143,7 @@ auto VerilogParser::parse_ExpressionBinaryOperator(
 {
     if (expression1 == nullptr || expression2 == nullptr) {
         return nullptr;
-}
+    }
 
     auto *expr = new Expression();
     setCodeInfo(expr);
@@ -1157,7 +1164,7 @@ auto VerilogParser::parse_ExpressionNorOperator(Value *primary) -> Value *
 {
     if (primary == nullptr) {
         return nullptr;
-}
+    }
 
     auto *exprOr  = new Expression();
     auto *exprNot = new Expression();
@@ -1171,11 +1178,12 @@ auto VerilogParser::parse_ExpressionNorOperator(Value *primary) -> Value *
     return exprNot;
 }
 
-auto VerilogParser::parse_ExpressionTernaryOperator(Value *expression1, Value *expression2, Value *expression3) -> Value *
+auto VerilogParser::parse_ExpressionTernaryOperator(Value *expression1, Value *expression2, Value *expression3)
+    -> Value *
 {
     if (expression1 == nullptr || expression2 == nullptr || expression3 == nullptr) {
         return nullptr;
-}
+    }
 
     When *when_o = new When();
     setCodeInfo(when_o);
@@ -1237,18 +1245,18 @@ auto VerilogParser::parse_RangeExpressionPO_NEG(Value *lbound, Value *rbound) ->
     return range_o;
 }
 
-auto
-VerilogParser::parse_EventTrigger(Value *hierarchical_identifier, hif::BList<Value> *bracket_expression_list) -> ValueStatement *
+auto VerilogParser::parse_EventTrigger(Value *hierarchical_identifier, hif::BList<Value> *bracket_expression_list)
+    -> ValueStatement *
 {
     messageAssert(hierarchical_identifier != nullptr, "Unexpected case", nullptr, nullptr);
     Expression *exprStatement = nullptr;
-    exprStatement = new Expression();
+    exprStatement             = new Expression();
     // deref is the map of event trigger
     exprStatement->setOperator(op_deref);
     setCodeInfo(exprStatement);
 
     if (bracket_expression_list != nullptr && !bracket_expression_list->empty()) {
-        Value *val     = bracket_expression_list->at(bracket_expression_list->size() - 1);
+        Value *val    = bracket_expression_list->at(bracket_expression_list->size() - 1);
         auto *range_o = dynamic_cast<Range *>(val);
 
         Value *valuePrev = hierarchical_identifier;
@@ -1279,7 +1287,7 @@ VerilogParser::parse_EventTrigger(Value *hierarchical_identifier, hif::BList<Val
     delete bracket_expression_list;
 
     ValueStatement *ret = nullptr;
-    ret = new ValueStatement();
+    ret                 = new ValueStatement();
     ret->setValue(exprStatement);
     return ret;
 }
@@ -1314,10 +1322,11 @@ auto VerilogParser::parse_PrimaryListOfMemberOrSlice(char *identifier, BList<Val
     return prefix;
 }
 
-auto VerilogParser::parse_HierarchicalIdentifier(Value *hierarchical_identifier, Value *hierarchical_identifier_item) -> Value *
+auto VerilogParser::parse_HierarchicalIdentifier(Value *hierarchical_identifier, Value *hierarchical_identifier_item)
+    -> Value *
 {
     auto *fieldRef_o = new FieldReference();
-    auto *identifier     = dynamic_cast<Identifier *>(hierarchical_identifier_item);
+    auto *identifier = dynamic_cast<Identifier *>(hierarchical_identifier_item);
 
     messageAssert(identifier != nullptr, "Unexpected identifier", hierarchical_identifier_item, nullptr);
 
@@ -1373,7 +1382,7 @@ auto VerilogParser::parse_MultipleConcatenation(Value *expression, Value *concat
         long long int t = intExpression->getValue();
         if (t < 0) {
             messageError("Negative index for concatenation", expression, nullptr);
-}
+        }
 
         BList<Value> ret_blist;
         for (int i = 0; i < t; ++i) {
@@ -1423,7 +1432,7 @@ auto VerilogParser::parse_MultipleConcatenation(Value *expression, Value *concat
 auto VerilogParser::parse_ArrayInitialization(hif::BList<Value> *value_list) -> Value *
 {
     auto *ret = new Aggregate();
-    int i    = 0;
+    int i     = 0;
     while (!value_list->empty()) {
         auto *v = value_list->front();
         value_list->remove(v);
@@ -1544,7 +1553,7 @@ auto VerilogParser::parse_NetDeclaration(
     Signal *signal_o                           = nullptr;
     net_ams_decl_identifier_assignment_t *curr = nullptr;
 
-    for (auto & it : *identifiers_or_assign) {
+    for (auto &it : *identifiers_or_assign) {
         curr     = it;
         signal_o = new Signal();
         setCodeInfo(signal_o);
@@ -1554,7 +1563,7 @@ auto VerilogParser::parse_NetDeclaration(
         topt.recurseIntoFieldRefs        = false;
         topt.recurseIntoDerefExpressions = false;
         topt.recurseIntoSlices           = true;
-        auto *id                   = dynamic_cast<Identifier *>(hif::getTerminalPrefix(curr->identifier, topt));
+        auto *id                         = dynamic_cast<Identifier *>(hif::getTerminalPrefix(curr->identifier, topt));
         messageAssert(id != nullptr, "Expected identifier", curr->identifier, nullptr);
         signal_o->setName(id->getName());
 
@@ -1563,22 +1572,22 @@ auto VerilogParser::parse_NetDeclaration(
             Range *rightRange = sliceRight->setSpan(nullptr);
             if (curr->dimension_list == nullptr) {
                 curr->dimension_list = new hif::BList<hif::Range>();
-}
+            }
             curr->dimension_list->push_front(rightRange);
             sliceRight = dynamic_cast<Slice *>(sliceRight->getPrefix());
         }
 
         if (curr->init_expression != nullptr) {
             signal_o->setValue(curr->init_expression);
-}
+        }
 
         if (curr->dimension_list != nullptr) {
             auto *array_prev = new Array();
-            Range *range_o    = curr->dimension_list->at(curr->dimension_list->size() - 1);
+            Range *range_o   = curr->dimension_list->at(curr->dimension_list->size() - 1);
             array_prev->setSpan(range_o);
 
             for (int i = curr->dimension_list->size() - 1; i >= 0; i--) {
-                range_o    = curr->dimension_list->at(i);
+                range_o   = curr->dimension_list->at(i);
                 auto *tmp = new Array();
                 tmp->setSpan(range_o);
                 tmp->setType(array_prev);
@@ -1590,14 +1599,14 @@ auto VerilogParser::parse_NetDeclaration(
                 array_prev->setType(hif::copy(explicitType));
             } else {
                 array_prev->setType(getSemanticType(range));
-}
+            }
             signal_o->setType(array_prev);
         } else {
             if (explicitType != nullptr) {
                 signal_o->setType(hif::copy(explicitType));
             } else {
                 signal_o->setType(getSemanticType(range, is_signed));
-}
+            }
         }
 
         signal_list->push_back(signal_o);
@@ -1621,7 +1630,7 @@ auto VerilogParser::parse_InitialOrFinalStep(const string &name, std::list<strin
     ret->setName(name);
     if (string_list != nullptr) {
         int n = 1;
-        for (auto & i : *string_list) {
+        for (auto &i : *string_list) {
             auto *pa = new ParameterAssign();
             setCodeInfo(pa);
             StringValue *txt = _factory.stringval(i);
@@ -1673,11 +1682,11 @@ auto VerilogParser::parse_Type(char *identifier, BList<Range> *non_empty_dimensi
     ret->setName(identifier);
 
     auto *array_prev = new Array();
-    Range *range_o    = non_empty_dimension_list->at(non_empty_dimension_list->size() - 1);
+    Range *range_o   = non_empty_dimension_list->at(non_empty_dimension_list->size() - 1);
     array_prev->setSpan(hif::copy(range_o));
 
     for (int i = non_empty_dimension_list->size() - 1; i >= 0; i--) {
-        range_o    = non_empty_dimension_list->at(i);
+        range_o   = non_empty_dimension_list->at(i);
         auto *tmp = new Array();
         tmp->setSpan(hif::copy(range_o));
         tmp->setType(array_prev);
@@ -1703,7 +1712,7 @@ auto VerilogParser::parse_Type(char *identifier, Value *expression) -> Signal *
 
     if (expression != nullptr) {
         signal_o->setValue(expression);
-}
+    }
 
     free(identifier);
     return signal_o;
@@ -1721,7 +1730,8 @@ auto VerilogParser::parse_Type(char *identifier) -> Signal *
     return signal_o;
 }
 
-auto VerilogParser::parse_EventDeclaration(hif::BList<Variable> *list_of_variable_identifiers) -> hif::BList<Declaration> *
+auto VerilogParser::parse_EventDeclaration(hif::BList<Variable> *list_of_variable_identifiers)
+    -> hif::BList<Declaration> *
 {
     auto *res = new BList<Declaration>();
 
@@ -1732,7 +1742,7 @@ auto VerilogParser::parse_EventDeclaration(hif::BList<Variable> *list_of_variabl
         i             = i.remove();
 
         Event *e = nullptr;
-        e = new Event();
+        e        = new Event();
         setCodeInfo(e);
 
         if (dynamic_cast<Array *>(var->getType()) != nullptr) {
@@ -1813,8 +1823,8 @@ auto VerilogParser::parse_AmsFlowOfPort(Value *hierarchical_identifier, Value *e
 {
     auto *blist = new BList<Value>();
     blist->push_back(expression_list);
-    Value *val       = parse_FunctionCall(hierarchical_identifier, blist);
-    auto *fc = dynamic_cast<FunctionCall *>(val);
+    Value *val = parse_FunctionCall(hierarchical_identifier, blist);
+    auto *fc   = dynamic_cast<FunctionCall *>(val);
     messageAssert(fc != nullptr, "Unexpected value", val, _sem);
     auto *ret = new FunctionCall();
     setCodeInfo(ret);
@@ -1878,8 +1888,9 @@ auto VerilogParser::parse_CaseItem(BList<Value> *expression_list, statement_t *s
     return ret;
 }
 
-auto
-VerilogParser::parse_AnalogCaseItem(hif::BList<Value> *expression_list, analog_statement_t *analog_statement_or_null) -> SwitchAlt *
+auto VerilogParser::parse_AnalogCaseItem(
+    hif::BList<Value> *expression_list,
+    analog_statement_t *analog_statement_or_null) -> SwitchAlt *
 {
     auto *ret = new SwitchAlt();
     setCodeInfo(ret);
@@ -1899,13 +1910,13 @@ auto VerilogParser::parse_ConditionalStatement(If *ifStatement) -> If *
 {
     if (ifStatement->defaults.size() != 1) {
         return ifStatement;
-}
+    }
 
     // if there is only one default and it is IF object
     If *act = dynamic_cast<If *>(ifStatement->defaults.front());
     if (act == nullptr) {
         return ifStatement;
-}
+    }
 
     // remove the default
     ifStatement->defaults.remove(act);
@@ -2071,7 +2082,7 @@ auto VerilogParser::parse_ProceduralTimingControlStatement(
 {
     if (stat_or_null == nullptr) {
         stat_or_null = new statement_t();
-}
+    }
 
     stat_or_null->procedural_timing_control = procedural_timing_control;
 
@@ -2084,7 +2095,7 @@ auto VerilogParser::parse_AnalogEventControlStatement(
 {
     if (stat_or_null == nullptr) {
         stat_or_null = new analog_statement_t();
-}
+    }
 
     stat_or_null->event_control = event_control;
 
@@ -2104,7 +2115,7 @@ auto VerilogParser::parse_AnalogEventControlStatement(
 
 auto VerilogParser::parse_WaitStatement(hif::Value *expression, statement_t *statement_or_null) -> statement_t *
 {
-    auto *ret    = new statement_t();
+    auto *ret           = new statement_t();
     ret->wait_statement = new hif::Wait();
     ret->wait_statement->setCondition(expression);
     // TODO check Wait sensitivity
@@ -2117,8 +2128,8 @@ auto VerilogParser::parse_WaitStatement(hif::Value *expression, statement_t *sta
     return ret;
 }
 
-auto
-VerilogParser::parseOrAnalogEventExpression(analog_event_expression_t *e1, analog_event_expression_t *e2) -> analog_event_expression_t *
+auto VerilogParser::parseOrAnalogEventExpression(analog_event_expression_t *e1, analog_event_expression_t *e2)
+    -> analog_event_expression_t *
 {
     messageAssert(
         e1->or_analog_event_expression != nullptr && e2->or_analog_event_expression != nullptr, "Unexpected case",
@@ -2192,13 +2203,13 @@ VerilogParser::parse_LoopStatementFor<analog_statement_t>(Assign *, Value *, Ass
 template <typename T> auto VerilogParser::parse_LoopStatementRepeat(Value *expression, T *statement) -> For *
 {
     hif::HifFactory factory;
-    auto *initD = new BList<DataDeclaration>();
-    auto *initV          = new BList<Action>();
-    auto *stepAct        = new BList<Action>();
+    auto *initD   = new BList<DataDeclaration>();
+    auto *initV   = new BList<Action>();
+    auto *stepAct = new BList<Action>();
 
     std::string indexName = NameTable::getInstance()->getFreshName("index");
     IntValue *lBound      = factory.intval(1, makeVerilogIntegerType());
-    auto *rBound      = dynamic_cast<IntValue *>(expression);
+    auto *rBound          = dynamic_cast<IntValue *>(expression);
 
     initD->push_back(factory.variable(makeVerilogIntegerType(), indexName, lBound));
 
@@ -2247,19 +2258,19 @@ auto VerilogParser::parse_TaskDeclaration(
     list<task_item_declaration_t *> *task_item_declaration_list,
     statement_t *statement_or_null) -> Procedure *
 {
-    Procedure *proc = nullptr;
-    proc                    = new Procedure();
+    Procedure *proc   = nullptr;
+    proc              = new Procedure();
     auto *state_table = new StateTable();
-    auto *state            = new State();
+    auto *state       = new State();
 
     setCodeInfo(proc);
     setCodeInfo(state_table);
     setCodeInfo(state);
 
-    for (auto & i : *task_item_declaration_list) {
+    for (auto &i : *task_item_declaration_list) {
         if (i->tf_declaration != nullptr) {
             for (BList<Port>::iterator j = i->tf_declaration->begin(); j != i->tf_declaration->end(); ++j) {
-                Port *port_o       = (*j);
+                Port *port_o  = (*j);
                 auto *param_o = new Parameter();
                 setCodeInfo(param_o);
 
@@ -2368,7 +2379,7 @@ auto VerilogParser::parse_BlockVariableType(char *identifier, BList<Range> *dime
 auto VerilogParser::parse_DisableStatement(Value *hierarchical_identifier) -> Break *
 {
     Break *ret = nullptr;
-    ret = new Break();
+    ret        = new Break();
     setCodeInfo(ret);
 
     auto *id = dynamic_cast<Identifier *>(hierarchical_identifier);
@@ -2406,7 +2417,8 @@ auto VerilogParser::parse_BlockItemDeclaration_Reg(
     return list_of_block_variable_identifiers;
 }
 
-auto VerilogParser::parse_BlockItemDeclaration_Integer(BList<Signal> *list_of_block_variable_identifiers) -> BList<Signal> *
+auto VerilogParser::parse_BlockItemDeclaration_Integer(BList<Signal> *list_of_block_variable_identifiers)
+    -> BList<Signal> *
 {
     for (BList<Signal>::iterator i = list_of_block_variable_identifiers->begin();
          i != list_of_block_variable_identifiers->end(); ++i) {
@@ -2449,7 +2461,7 @@ auto VerilogParser::parse_TfDeclaration(
         port_o->setType(getSemanticType(range_opt, isSigned));
     } else {
         port_o->setType(hif::copy(task_port_type));
-}
+    }
 
     delete range_opt;
     return port_o;
@@ -2481,7 +2493,7 @@ auto VerilogParser::parse_FunctionDeclaration(
     list<function_item_declaration_t *> *function_item_declaration_list,
     statement_t *statements) -> Function *
 {
-    auto *function_o     = new Function();
+    auto *function_o   = new Function();
     auto *stateTable_o = new StateTable();
 
     setCodeInfo(function_o);
@@ -2509,7 +2521,7 @@ auto VerilogParser::parse_FunctionDeclaration(
                 Value *init_val = port_o->getValue();
                 if (init_val != nullptr) {
                     param_o->setValue(hif::copy(init_val));
-}
+                }
 
                 function_o->parameters.push_back(param_o);
                 delete port_o;
@@ -2602,7 +2614,7 @@ auto VerilogParser::parse_FunctionDeclaration(
     std::list<block_item_declaration_t *> *block_item_declaration_list,
     statement_t *statements) -> Function *
 {
-    auto *function_o    = new Function();
+    auto *function_o  = new Function();
     auto *state_table = new StateTable();
 
     setCodeInfo(function_o);
@@ -2627,7 +2639,7 @@ auto VerilogParser::parse_FunctionDeclaration(
         Value *init_val = port_o->getValue();
         if (init_val != nullptr) {
             param_o->setValue(hif::copy(init_val));
-}
+        }
 
         function_o->parameters.push_back(param_o);
         delete port_o;
@@ -2785,22 +2797,22 @@ auto VerilogParser::parse_AnalogDifferentialFunctionCall(
     ret->setName(function_name);
     if (expression1 != nullptr) {
         ret->parameterAssigns.push_back(param1);
-}
+    }
     if (expression2 != nullptr) {
         ret->parameterAssigns.push_back(param2);
-}
+    }
     if (expression3 != nullptr) {
         ret->parameterAssigns.push_back(param3);
-}
+    }
     if (expression4 != nullptr) {
         ret->parameterAssigns.push_back(param4);
-}
+    }
 
     return ret;
 }
 
-auto
-VerilogParser::parse_ContributionStatement(hif::Value *branch_probe_function_call, hif::Value *expression) -> hif::ProcedureCall *
+auto VerilogParser::parse_ContributionStatement(hif::Value *branch_probe_function_call, hif::Value *expression)
+    -> hif::ProcedureCall *
 {
     messageAssert(
         branch_probe_function_call != nullptr && expression != nullptr, "Expected two parameters", nullptr, nullptr);
@@ -2874,28 +2886,29 @@ auto VerilogParser::parse_AnalogBuiltInFunctionCall(
     }
 
     FunctionCall *ret = nullptr;
-    ret = new FunctionCall();
+    ret               = new FunctionCall();
     setCodeInfo(ret);
     ret->setName(analog_built_in_function_name->getName());
     ret->parameterAssigns.push_back(param1);
     if (analog_expression2 != nullptr) {
         ret->parameterAssigns.push_back(param2);
-}
+    }
 
     delete analog_built_in_function_name;
 
     // Now managing special cases:
     if (ret->getName() == "pow") {
         Expression *e = nullptr;
-        e = new Expression();
+        e             = new Expression();
         e->setOperator(hif::op_pow);
         e->setValue1(ret->parameterAssigns.front()->setValue(nullptr));
         e->setValue2(ret->parameterAssigns.back()->setValue(nullptr));
         delete ret;
         return e;
-    } if (ret->getName() == "sqrt") {
+    }
+    if (ret->getName() == "sqrt") {
         Expression *e = nullptr;
-        e = new Expression();
+        e             = new Expression();
         e->setOperator(hif::op_pow);
         e->setValue1(ret->parameterAssigns.front()->setValue(nullptr));
         e->setValue2(_factory.realval(0.5));
@@ -2913,19 +2926,19 @@ auto VerilogParser::parse_analysisFunctionCall(std::list<string> *string_list) -
         nullptr);
 
     FunctionCall *fc = nullptr;
-    fc = new FunctionCall();
+    fc               = new FunctionCall();
     fc->setName("analysis");
     setCodeInfo(fc);
-    for (auto & i : *string_list) {
+    for (auto &i : *string_list) {
         auto *s = new String();
         setCodeInfo(s);
         StringValue *t = nullptr;
-        t = new StringValue();
+        t              = new StringValue();
         setCodeInfo(t);
         t->setType(s);
         t->setValue(i);
         ParameterAssign *pa = nullptr;
-        pa = new ParameterAssign();
+        pa                  = new ParameterAssign();
         setCodeInfo(pa);
         pa->setName("param1");
         pa->setValue(t);
@@ -2996,19 +3009,19 @@ auto VerilogParser::parse_AnalogFilterFunctionCall(
     ret->parameterAssigns.push_back(param1);
     if (expression2 != nullptr) {
         ret->parameterAssigns.push_back(param2);
-}
+    }
     if (expression3 != nullptr) {
         ret->parameterAssigns.push_back(param3);
-}
+    }
     if (expression4 != nullptr) {
         ret->parameterAssigns.push_back(param4);
-}
+    }
     if (expression5 != nullptr) {
         ret->parameterAssigns.push_back(param5);
-}
+    }
     if (expression6 != nullptr) {
         ret->parameterAssigns.push_back(param6);
-}
+    }
 
     return ret;
 }
@@ -3062,13 +3075,13 @@ auto VerilogParser::parse_AnalogSmallSignalFunctionCall(
     ret->setName(function_name);
     if (expression1 != nullptr) {
         ret->parameterAssigns.push_back(param1);
-}
+    }
     if (expression2 != nullptr) {
         ret->parameterAssigns.push_back(param2);
-}
+    }
     if (expression3 != nullptr) {
         ret->parameterAssigns.push_back(param3);
-}
+    }
 
     return ret;
 }
@@ -3124,24 +3137,24 @@ auto VerilogParser::parse_analogEventFunction(
     ret->parameterAssigns.push_back(param1);
     if (expression2 != nullptr) {
         ret->parameterAssigns.push_back(param2);
-}
+    }
     if (expression3 != nullptr) {
         ret->parameterAssigns.push_back(param3);
-}
+    }
     if (expression4 != nullptr) {
         ret->parameterAssigns.push_back(param4);
-}
+    }
     if (expression5 != nullptr) {
         ret->parameterAssigns.push_back(param5);
-}
+    }
 
     return ret;
 }
 
 auto VerilogParser::parse_EventExpressionDriverUpdate(hif::Value *expression) -> event_expression_t *
 {
-    auto *ret = new event_expression_t();
-    ret->expression         = _factory.functionCall(
+    auto *ret       = new event_expression_t();
+    ret->expression = _factory.functionCall(
         "driver_update", nullptr, _factory.noTemplateArguments(), _factory.parameterArgument("param1", expression));
     setCodeInfo(ret->expression);
     _factory.codeInfo(
@@ -3170,7 +3183,7 @@ auto VerilogParser::parse_SystemTaskEnable(
 
     if (expression_comma_list == nullptr) {
         return ret;
-}
+    }
 
     unsigned int paramIndex = 2;
     std::stringstream ss;
@@ -3190,7 +3203,8 @@ auto VerilogParser::parse_SystemTaskEnable(
     return ret;
 }
 
-auto VerilogParser::parse_TaskEnable(Value *hierarchical_identifier, BList<Value> *comma_expression_list) -> ProcedureCall *
+auto VerilogParser::parse_TaskEnable(Value *hierarchical_identifier, BList<Value> *comma_expression_list)
+    -> ProcedureCall *
 {
     auto *ret = new ProcedureCall();
     setCodeInfo(ret);
@@ -3201,11 +3215,11 @@ auto VerilogParser::parse_TaskEnable(Value *hierarchical_identifier, BList<Value
 
     if (comma_expression_list == nullptr) {
         return ret;
-}
+    }
 
     for (hif::BList<hif::Value>::iterator it(comma_expression_list->begin()); it != comma_expression_list->end();) {
-        Value *v               = *it;
-        it                     = it.remove();
+        Value *v    = *it;
+        it          = it.remove();
         auto *param = new ParameterAssign();
         setCodeInfo(param);
         param->setValue(v);
@@ -3220,7 +3234,7 @@ auto VerilogParser::parse_NamedPortConnectionList(char *identifier, Value *expre
 {
     if (expression_opt == nullptr) {
         return nullptr;
-}
+    }
 
     auto *portAssign_o = new PortAssign();
     setCodeInfo(portAssign_o);
@@ -3233,10 +3247,10 @@ auto VerilogParser::parse_NamedPortConnectionList(char *identifier, Value *expre
 }
 
 auto VerilogParser::parse_ModuleInstance(
-    std::list<net_ams_decl_identifier_assignment_t *> *net_ams_decl_identifier_assignment_list) -> module_instance_and_net_ams_decl_identifier_assignment_t *
+    std::list<net_ams_decl_identifier_assignment_t *> *net_ams_decl_identifier_assignment_list)
+    -> module_instance_and_net_ams_decl_identifier_assignment_t *
 {
-    auto *wrapper =
-        new module_instance_and_net_ams_decl_identifier_assignment_t();
+    auto *wrapper                                    = new module_instance_and_net_ams_decl_identifier_assignment_t();
     wrapper->net_ams_decl_identifier_assignment_list = net_ams_decl_identifier_assignment_list;
 
     return wrapper;
@@ -3244,9 +3258,10 @@ auto VerilogParser::parse_ModuleInstance(
 
 auto VerilogParser::parse_ModuleInstance(
     Identifier *name_of_module_instance,
-    list_of_port_connections_t *list_of_port_connections_opt) -> module_instance_and_net_ams_decl_identifier_assignment_t *
+    list_of_port_connections_t *list_of_port_connections_opt)
+    -> module_instance_and_net_ams_decl_identifier_assignment_t *
 {
-    auto *ret          = new Instance();
+    auto *ret     = new Instance();
     auto *viewref = new ViewReference();
 
     setCodeInfo(ret);
@@ -3291,8 +3306,7 @@ auto VerilogParser::parse_ModuleInstance(
         delete val_list;
     }
 
-    auto *wrapper =
-        new module_instance_and_net_ams_decl_identifier_assignment_t();
+    auto *wrapper                    = new module_instance_and_net_ams_decl_identifier_assignment_t();
     wrapper->name_of_module_instance = ret;
 
     delete list_of_port_connections_opt;
@@ -3303,12 +3317,12 @@ auto VerilogParser::parse_ModuleInstance(
 
 auto VerilogParser::parse_ModuleInstantiation(
     char *identifier,
-    std::list<module_instance_and_net_ams_decl_identifier_assignment_t *> *module_instance_list) -> std::list<module_instance_and_net_ams_decl_identifier_assignment_t *> *
+    std::list<module_instance_and_net_ams_decl_identifier_assignment_t *> *module_instance_list)
+    -> std::list<module_instance_and_net_ams_decl_identifier_assignment_t *> *
 {
-    for (auto & i : *module_instance_list) {
+    for (auto &i : *module_instance_list) {
         if (i->name_of_module_instance != nullptr) {
-            auto *viewref_o =
-                dynamic_cast<ViewReference *>(i->name_of_module_instance->getReferencedType());
+            auto *viewref_o = dynamic_cast<ViewReference *>(i->name_of_module_instance->getReferencedType());
             messageDebugAssert(
                 viewref_o != nullptr, "Unexpected ref type", i->name_of_module_instance->getReferencedType(), _sem);
             viewref_o->setDesignUnit(identifier);
@@ -3319,8 +3333,7 @@ auto VerilogParser::parse_ModuleInstantiation(
 
             i->ams_created_variables = new BList<Signal>();
 
-            for (auto it(
-                     i->net_ams_decl_identifier_assignment_list->begin());
+            for (auto it(i->net_ams_decl_identifier_assignment_list->begin());
                  it != i->net_ams_decl_identifier_assignment_list->end(); ++it) {
                 messageAssert((*it)->dimension_list == nullptr, "Unexpected dimension_list", nullptr, nullptr);
 
@@ -3353,15 +3366,15 @@ auto VerilogParser::parse_ModuleInstantiation(
 auto VerilogParser::parse_ModuleInstantiation(
     char *identifier,
     BList<ValueTPAssign> *parameter_value_assignment,
-    std::list<module_instance_and_net_ams_decl_identifier_assignment_t *> *module_instance_list) -> std::list<module_instance_and_net_ams_decl_identifier_assignment_t *> *
+    std::list<module_instance_and_net_ams_decl_identifier_assignment_t *> *module_instance_list)
+    -> std::list<module_instance_and_net_ams_decl_identifier_assignment_t *> *
 {
     std::list<module_instance_and_net_ams_decl_identifier_assignment_t *> *inst_l =
         this->parse_ModuleInstantiation(identifier, module_instance_list);
 
-    for (auto & i : *inst_l) {
+    for (auto &i : *inst_l) {
         if (i->name_of_module_instance != nullptr) {
-            auto *viewref_o =
-                dynamic_cast<ViewReference *>(i->name_of_module_instance->getReferencedType());
+            auto *viewref_o = dynamic_cast<ViewReference *>(i->name_of_module_instance->getReferencedType());
             messageAssert(
                 viewref_o != nullptr, "Unexpected ref type", i->name_of_module_instance->getReferencedType(), _sem);
 
@@ -3381,7 +3394,8 @@ auto VerilogParser::parse_ModuleInstantiation(
 auto VerilogParser::parse_ModuleInstantiation(
     char *identifier,
     Range *range_opt,
-    std::list<module_instance_and_net_ams_decl_identifier_assignment_t *> *module_instance_list) -> std::list<module_instance_and_net_ams_decl_identifier_assignment_t *> *
+    std::list<module_instance_and_net_ams_decl_identifier_assignment_t *> *module_instance_list)
+    -> std::list<module_instance_and_net_ams_decl_identifier_assignment_t *> *
 {
     std::list<module_instance_and_net_ams_decl_identifier_assignment_t *> *inst_l =
         this->parse_ModuleInstantiation(identifier, module_instance_list);
@@ -3390,7 +3404,7 @@ auto VerilogParser::parse_ModuleInstantiation(
         return module_instance_list;
     }
 
-    for (auto & i : *inst_l) {
+    for (auto &i : *inst_l) {
         hif::BList<hif::Signal> *ams_created_variables = i->ams_created_variables;
         messageAssert(ams_created_variables != nullptr, "Unexpected case", nullptr, _sem);
 
@@ -3406,14 +3420,12 @@ auto VerilogParser::parse_ModuleInstantiation(
     return module_instance_list;
 }
 
-auto VerilogParser::parse_ModuleOrGenerateItem(
-    std::list<module_instance_and_net_ams_decl_identifier_assignment_t *> *module_instantiation) -> module_or_generate_item_t *
+auto VerilogParser::parse_ModuleOrGenerateItem(std::list<module_instance_and_net_ams_decl_identifier_assignment_t *>
+                                                   *module_instantiation) -> module_or_generate_item_t *
 {
     auto *ret = new module_or_generate_item_t();
 
-    for (auto it(
-             module_instantiation->begin());
-         it != module_instantiation->end();) {
+    for (auto it(module_instantiation->begin()); it != module_instantiation->end();) {
         module_instance_and_net_ams_decl_identifier_assignment_t *item = *it;
 
         // In parent rule (parse_moduleDeclaration) we are expecting either:
@@ -3422,7 +3434,7 @@ auto VerilogParser::parse_ModuleOrGenerateItem(
         if (item->name_of_module_instance != nullptr) {
             if (ret->module_instantiation == nullptr) {
                 ret->module_instantiation = new BList<Instance>();
-}
+            }
             ret->module_instantiation->push_back(item->name_of_module_instance);
         } else {
             if (ret->module_or_generate_item_declaration == nullptr) {
@@ -3456,7 +3468,7 @@ auto VerilogParser::parse_NatureBinding(char *identifier, const bool isPotential
         var->setName("potential");
     } else {
         var->setName("flow");
-}
+    }
 
     free(identifier);
     return var;
@@ -3472,8 +3484,8 @@ void VerilogParser::parse_DisciplineDeclaration(char *identifier, hif::BList<Var
     DesignUnit *ret = factory.designUnit(identifier, v);
 
     for (BList<Variable>::iterator i = discipline_item_list->begin(); i != discipline_item_list->end(); ++i) {
-        Variable *var     = (*i);
-        auto *vr = dynamic_cast<ViewReference *>(var->getType());
+        Variable *var = (*i);
+        auto *vr      = dynamic_cast<ViewReference *>(var->getType());
         messageAssert(vr != nullptr, "Unexpected discipline_item_list", var, _sem);
         v->inheritances.push_back(hif::copy(vr));
     }
@@ -3500,7 +3512,7 @@ auto VerilogParser::parse_AnalogFunctionDeclaration(
         type = factory.bitvector(new Range(31, 0), true, true, false, true);
     } else {
         type = factory.real();
-}
+    }
 
     SubProgram *s = factory.subprogram(type, identifier, factory.noTemplates(), factory.noParameters());
 
@@ -3521,7 +3533,7 @@ auto VerilogParser::parse_AnalogFunctionDeclaration(
             Port *p = *it;
             if (p->getName() != d->getName()) {
                 continue;
-}
+            }
             auto *pp = new Parameter();
             pp->setName(p->getName());
             pp->setValue(d->setValue(nullptr));
@@ -3544,7 +3556,7 @@ auto VerilogParser::parse_AnalogFunctionDeclaration(
 
         if (!found) {
             s->getStateTable()->declarations.push_back(hif::copy(d));
-}
+        }
     }
 
     delete analog_function_item_declaration_list;
@@ -3570,7 +3582,7 @@ auto VerilogParser::parse_GenvarDeclaration(hif::BList<Identifier> *list_of_iden
     if (list_of_identifiers != nullptr) {
         for (hif::BList<Identifier>::iterator i = list_of_identifiers->begin(); i != list_of_identifiers->end(); ++i) {
             Identifier *id = *i;
-            auto *v    = new Variable();
+            auto *v        = new Variable();
             setCodeInfo(v);
             v->addProperty(PROPERTY_GENVAR);
             v->setName(id->getName());
@@ -3671,8 +3683,8 @@ auto VerilogParser::parse_SpecifyBlock(std::list<specify_item_t *> *items) -> st
             it = items->erase(it);
 
             continue;
-        }             static_assert("Unexpected specify_item");
-       
+        }
+        static_assert(true);
 
         ++it;
     }
@@ -3698,7 +3710,7 @@ auto VerilogParser::parse_TimingCheckEvent(
             ret->addProperty(PROPERTY_SENSITIVE_NEG);
         } else {
             messageError("Unexpected case", nullptr, nullptr);
-}
+        }
     }
 
     delete specify_terminal_descriptor;
@@ -3742,7 +3754,8 @@ auto VerilogParser::parse_TimingCheck(
     return pCall;
 }
 
-auto VerilogParser::parse_SpecifyTerminalDescriptor(char *identifier, Value *range_expression) -> specify_terminal_descriptor_t *
+auto VerilogParser::parse_SpecifyTerminalDescriptor(char *identifier, Value *range_expression)
+    -> specify_terminal_descriptor_t *
 {
     auto *ret = new specify_terminal_descriptor_t();
 
@@ -3811,11 +3824,11 @@ void VerilogParser::_fillBaseContentsFromModuleOrGenerateItem(
     delete mod_item;
 }
 
-auto
-VerilogParser::parse_ParameterValueAssignment(list_of_parameter_assignment_t *list_of_parameter_assignment) -> BList<ValueTPAssign> *
+auto VerilogParser::parse_ParameterValueAssignment(list_of_parameter_assignment_t *list_of_parameter_assignment)
+    -> BList<ValueTPAssign> *
 {
-    auto *ret = new BList<ValueTPAssign>();
-    BList<Value> *value_list  = list_of_parameter_assignment->ordered_parameter_assignment_list;
+    auto *ret                = new BList<ValueTPAssign>();
+    BList<Value> *value_list = list_of_parameter_assignment->ordered_parameter_assignment_list;
 
     if (value_list != nullptr) {
         for (BList<Value>::iterator i = value_list->begin(); i != value_list->end();) {
@@ -4017,11 +4030,11 @@ auto VerilogParser::parse_RealTime(real_number_t &REALTIME) -> Value *
 
     if (REALTIME.exp != nullptr) {
         free(REALTIME.exp);
-}
+    }
 
     if (REALTIME.value != nullptr) {
         free(REALTIME.value);
-}
+    }
 
     setCodeInfo(ret);
     return ret;
@@ -4125,7 +4138,7 @@ auto VerilogParser::parse_DecBasedNumber(number_t &DEC_NUMBER, number_t &BASED_N
                 result.append(string(padLen, front));
             } else {
                 result.append(string(padLen, '0'));
-}
+            }
         }
     } else if (!tmpResult.empty() && tmpResult.size() > numberOfBits) {
         tmpResult = tmpResult.substr(tmpResult.size() - numberOfBits);

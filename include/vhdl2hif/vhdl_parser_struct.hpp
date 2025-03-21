@@ -10,6 +10,8 @@
 
 #include <hif/hif.hpp>
 
+#include <cstring>
+
 // DESIGN UNIT / VIEW / LIBRARY
 struct primary_unit_t;
 struct architecture_body_t;
@@ -41,18 +43,18 @@ struct assert_directive_t;
 struct verification_directive_t;
 
 /// @brief Data about a identifier.
-typedef struct {
+struct identifier_data_t {
     int line;   ///< The source code line number.
     int column; ///< The source code column number.
     int len;    ///< The length of the token.
     char *name; ///< The name of the token.
-} identifier_data_t;
+};
 
 /// @brief Data about a keyword.
-typedef struct {
+struct keyword_data_t {
     int line;   ///< The source code line number.
     int column; ///< The source code column number.
-} keyword_data_t;
+};
 
 /* -----------------------------------------------------------------------
  *  VHDL
@@ -77,8 +79,7 @@ struct primary_unit_t {
 
 struct architecture_body_t {
     architecture_body_t()
-        : 
-         components()
+        : components()
     {
         // ntd
     }
@@ -101,7 +102,7 @@ struct architecture_body_t {
     {
         if (this == &o) {
             contents = o.contents;
-}
+        }
         entity_name = o.entity_name;
         components  = o.components;
         return *this;
@@ -194,7 +195,7 @@ struct binding_indication_t {
 /// @brief The component instances to which this component configuration applies.
 struct instantiation_list_t {
     instantiation_list_t()
-         
+
     {
         // do nothing
     }
@@ -270,17 +271,17 @@ struct configuration_map_key_t {
     {
         if (this == &other) {
             return false;
-}
+        }
 
         if (design_unit < other.design_unit) {
             return true;
-}
+        }
         if (configuration < other.configuration) {
             return true;
-}
+        }
         if (view < other.view) {
             return true;
-}
+        }
 
         return false;
     }

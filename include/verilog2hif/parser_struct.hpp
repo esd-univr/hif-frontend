@@ -8,6 +8,8 @@
 #pragma once
 
 #include <hif/hif.hpp>
+
+#include <cstring>
 #include <list>
 
 struct module_or_generate_item_declaration_t;
@@ -34,33 +36,33 @@ struct specify_terminal_descriptor_t;
 struct timing_check_event_control_t;
 
 /// @brief Data about a identifier.
-typedef struct {
+struct identifier_data_t {
     int line;   ///< The source code line number.
     int column; ///< The source code column number.
     int len;    ///< The length of the token.
     char *name; ///< The name of the token.
-} identifier_data_t;
+};
 
 /// @brief Data about a keyword.
-typedef struct {
+struct keyword_data_t {
     int line;   ///< The source code line number.
     int column; ///< The source code column number.
-} keyword_data_t;
+};
 
 /// @brief Data about a number.
-typedef struct {
+struct number_t {
     int bits;    ///< The number of bits.
     char *value; ///< The value of the number.
     char type;   ///< The type of the number.
     bool sign;   ///< The sign of the number.
-} number_t;
+};
 
 /// @brief Data about a real number.
-typedef struct {
+struct real_number_t {
     bool e;      ///< The presence of the exponent.
     char *value; ///< The value of the number.
     char *exp;   ///< The exponent of the number.
-} real_number_t;
+};
 
 /// @brief Data about generate procedures.
 struct module_or_generate_item_declaration_t {

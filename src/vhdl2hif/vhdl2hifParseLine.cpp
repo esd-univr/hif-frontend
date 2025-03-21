@@ -59,10 +59,10 @@ void vhdl2hifParseLine::_validateArguments()
 {
     if (!_options['h'].value.empty()) {
         printHelp();
-}
+    }
     if (!_options['v'].value.empty()) {
         printVersion();
-}
+    }
 
     if (_files.empty()) {
         messageError(
@@ -72,7 +72,7 @@ void vhdl2hifParseLine::_validateArguments()
     }
 
     // Validate input file list
-    for (auto & _file : _files) {
+    for (auto &_file : _files) {
         std::string cleanFile = _cleanFileName(_file);
         if (!_checkVhdlFile(cleanFile) && !_checkPslFile(cleanFile)) {
             messageError("Unrecognized input file:" + _file, nullptr, nullptr);
@@ -87,19 +87,22 @@ void vhdl2hifParseLine::_validateArguments()
         std::string::size_type ix = out.find(".hif.xml");
         if (ix == std::string::npos) {
             out += ".hif.xml";
-}
+        }
     }
     _options['o'].value = out;
 }
 
-auto vhdl2hifParseLine::_checkVhdlFile(const std::string& inputFile) -> bool
+auto vhdl2hifParseLine::_checkVhdlFile(const std::string &inputFile) -> bool
 {
     return inputFile.find(".vhd") != std::string::npos || inputFile.find(".vhdl") != std::string::npos;
 }
 
-auto vhdl2hifParseLine::_checkPslFile(const std::string& inputFile) -> bool { return inputFile.find(".psl") != std::string::npos; }
+auto vhdl2hifParseLine::_checkPslFile(const std::string &inputFile) -> bool
+{
+    return inputFile.find(".psl") != std::string::npos;
+}
 
-auto vhdl2hifParseLine::_cleanFileName(const std::string& inputString) -> std::string
+auto vhdl2hifParseLine::_cleanFileName(const std::string &inputString) -> std::string
 {
     size_t found = inputString.find_last_of('/');
 

@@ -134,8 +134,8 @@ auto VhdlParser::parse_FLPropertyOccurrence(const char *op, Value *fl_property, 
     return ret;
 }
 
-auto
-VhdlParser::parse_FLPropertyOccurrenceCycles(const char *op, Value *fl_property, Value *occurrence, Value *cycles) -> Value *
+auto VhdlParser::parse_FLPropertyOccurrenceCycles(const char *op, Value *fl_property, Value *occurrence, Value *cycles)
+    -> Value *
 {
     auto *ret = dynamic_cast<FunctionCall *>(parse_FLProperty(op, fl_property));
 
@@ -154,7 +154,8 @@ VhdlParser::parse_FLPropertyOccurrenceCycles(const char *op, Value *fl_property,
     return ret;
 }
 
-auto VhdlParser::parse_FLPropertyOccurrenceRange(const char *op, Value *fl_property, Value *occurrence, Range *range) -> Value *
+auto VhdlParser::parse_FLPropertyOccurrenceRange(const char *op, Value *fl_property, Value *occurrence, Range *range)
+    -> Value *
 {
     auto *ret = dynamic_cast<FunctionCall *>(parse_FLProperty(op, fl_property));
 
@@ -277,10 +278,10 @@ auto VhdlParser::parse_VerificationUnit(Value *name, std::list<vunit_item_t *> *
     messageAssert(vunitName != nullptr, "Unexpected vunit identifier", name, nullptr);
 
     auto *designUnit_o = new DesignUnit();
-    auto *contents_o     = new Contents();
-    View *view_o             = new View();
+    auto *contents_o   = new Contents();
+    View *view_o       = new View();
     auto *stateTable_o = new StateTable();
-    auto *state_o           = new State();
+    auto *state_o      = new State();
 
     view_o->setEntity(new Entity());
     view_o->setLanguageID(hif::psl);

@@ -69,11 +69,11 @@ private:
     auto _isConstantExpr(hif::Value *v) -> bool;
 
     void _fixAllSignalsSesitivity(hif::StateTable *o);
-    void _fixProcessesWithWait(hif::StateTable *o);
+    static void _fixProcessesWithWait(hif::StateTable *o);
 
     void _fixCollectedGenVarVariables();
     auto _fixGenVarVariable(hif::Variable *o) -> bool;
-    auto _getTopParent(hif::Action *a1, hif::Action *a2) -> hif::Action *;
+    static auto _getTopParent(hif::Action *a1, hif::Action *a2) -> hif::Action *;
 
     void _fixMissingDeclarationType(hif::DataDeclaration *decl);
     void _fixMissingPortType(hif::Port *o, const hif::semantics::ReferencesSet &refs);
@@ -609,7 +609,7 @@ auto FixDescription_1::visitValueTP(hif::ValueTP &o) -> int
     std::list<hif::FunctionCall *> list;
     hif::search(list, &o, q);
     if (!list.empty()) {
-        for (auto fc : list) {
+        for (auto *fc : list) {
             messageAssert(
                 fc->getName() == "iterated_concat", "ConstExprs with function calls are not supported yet.", &o, _sem);
 
@@ -699,7 +699,7 @@ auto FixDescription_1::visitWhile(hif::While &o) -> int
         hif::HifTypedQuery<hif::Break> q;
         std::list<hif::Break *> list;
         hif::search(list, &o, q);
-        for (auto b : list) {
+        for (auto *b : list) {
             if (b->getName() != o.getName()) {
                 continue;
             }
@@ -988,7 +988,7 @@ auto FixDescription_1::_fixGenVarVariable(hif::Variable *o) -> bool
     Scopes scopes;
     ForScopes forScopes;
 
-    for (auto r : refs) {
+    for (auto *r : refs) {
         auto *ff  = hif::getNearestParent<hif::For>(r);
         auto *ii  = hif::getNearestParent<hif::If>(r);
         auto *ffg = hif::getNearestParent<hif::ForGenerate>(r);
@@ -1014,7 +1014,7 @@ auto FixDescription_1::_fixGenVarVariable(hif::Variable *o) -> bool
 
     hif::CopyOptions copt;
     copt.copyProperties = false;
-    for (auto fg : forScopes) {
+    for (auto *fg : forScopes) {
         for (hif::BList<hif::Action>::iterator j = fg->initValues.begin(); j != fg->initValues.end(); ++j) {
             auto *ass = dynamic_cast<hif::Assign *>(*j);
             if (ass == nullptr) {
@@ -1068,7 +1068,7 @@ auto FixDescription_1::_fixGenVarVariable(hif::Variable *o) -> bool
 
     // fixing all tops
     _genVarsSeq.push_back(o);
-    for (auto a : scopes) {
+    for (auto *a : scopes) {
         auto *ff = dynamic_cast<hif::For *>(a);
         auto *ii = dynamic_cast<hif::If *>(a);
 
@@ -1268,7 +1268,7 @@ auto FixDescription_1::_fixLocalParam(hif::Identifier *o) -> bool
     // Updating references
     hif::semantics::ReferencesSet refs;
     hif::semantics::getReferences(c, refs, _sem, view);
-    for (auto ref : refs) {
+    for (auto *ref : refs) {
         hif::semantics::setDeclaration(ref, v);
     }
 

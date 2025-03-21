@@ -10,8 +10,8 @@
 #include <algorithm>
 #include <sstream>
 
-#include "verilog2hif/verilog_parser.hpp"
 #include "verilog2hif/support.hpp"
+#include "verilog2hif/verilog_parser.hpp"
 
 using namespace hif;
 using std::list;
@@ -25,12 +25,12 @@ auto getTimeValue(std::string s) -> TimeValue *
     typedef String::size_type Size;
 
     auto *ret = new TimeValue();
-    Size i         = 0;
+    Size i    = 0;
     for (; i < s.size(); ++i) {
         char c = s[i];
         if (c != '0' && c != '1') {
             break;
-}
+        }
     }
 
     String val  = s.substr(0, i);
@@ -58,7 +58,7 @@ auto getTimeValue(std::string s) -> TimeValue *
         uval = TimeValue::time_fs;
     } else {
         messageError("Unexpected unit for timescale " + unit, nullptr, nullptr);
-}
+    }
 
     ret->setValue(dval);
     ret->setUnit(uval);
@@ -122,7 +122,7 @@ void VerilogParser::_buildActionListFromStatement(
 {
     if (statement == nullptr) {
         return;
-}
+    }
 
     if (statement->seq_block_declarations != nullptr) {
         if (!statement->seq_block_declarations->empty()) {
@@ -170,7 +170,7 @@ void VerilogParser::_buildActionListFromStatement(
                     wait_o->sensitivityNeg.push_back(v);
                 } else {
                     ++it;
-}
+                }
             }
 
             if (allSignals) {
@@ -191,7 +191,7 @@ void VerilogParser::_buildActionListFromStatement(
     // Mutually exclusive cases
     if (statement->skipped) {
         return;
-}
+    }
 
     if (statement->blocking_assignment != nullptr) {
         actionList.push_back(statement->blocking_assignment);
@@ -259,7 +259,7 @@ void VerilogParser::_buildActionListFromAnalogStatement(analog_statement_t *stat
 {
     if (statement == nullptr) {
         return;
-}
+    }
 
     if (statement->analog_seq_block_declarations != nullptr && !statement->analog_seq_block_declarations->empty()) {
         messageError(
@@ -290,7 +290,7 @@ void VerilogParser::_buildActionListFromAnalogStatement(analog_statement_t *stat
                 wait_o->sensitivityNeg.push_back(v);
             } else {
                 ++it;
-}
+            }
         }
 
         if (allSignals) {
@@ -304,7 +304,7 @@ void VerilogParser::_buildActionListFromAnalogStatement(analog_statement_t *stat
     // null statement, skip it
     if (statement->skipped) {
         return;
-}
+    }
 
     if (statement->analog_case_statement != nullptr) {
         actionList.push_back(statement->analog_case_statement);
@@ -325,8 +325,7 @@ void VerilogParser::_buildActionListFromAnalogStatement(analog_statement_t *stat
         }
 
         delete statement->analog_seq_block_actions;
-        While *while_o =
-            _factory.whileLoop(_factory.boolval(false), _factory.noActions(), statement->blockName, true);
+        While *while_o = _factory.whileLoop(_factory.boolval(false), _factory.noActions(), statement->blockName, true);
         while_o->actions.merge(blockActionList);
         actionList.push_back(while_o);
     } else if (statement->analog_procedural_assignment != nullptr) {
@@ -363,11 +362,11 @@ void VerilogParser::_buildSensitivityFromEventControl(
 {
     if (ect == nullptr) {
         return;
-}
+    }
 
     if (ect->event_expression_list != nullptr) {
         std::list<event_expression_t *> *event_expr = ect->event_expression_list;
-        auto it     = event_expr->begin();
+        auto it                                     = event_expr->begin();
 
         for (; it != event_expr->end(); ++it) {
             sensitivity.push_back((*it)->expression);
@@ -392,7 +391,7 @@ void VerilogParser::_buildSensitivityFromAnalogEventControl(
 {
     if (ect == nullptr) {
         return;
-}
+    }
 
     if (ect->analog_event_expression != nullptr) {
         if (ect->analog_event_expression->or_analog_event_expression != nullptr) {
@@ -406,7 +405,7 @@ void VerilogParser::_buildSensitivityFromAnalogEventControl(
         }
     } else if (ect->event_expression_list != nullptr) {
         std::list<event_expression_t *> *event_expr = ect->event_expression_list;
-        auto it     = event_expr->begin();
+        auto it                                     = event_expr->begin();
 
         for (; it != event_expr->end();) {
             sensitivity.push_back((*it)->expression);
@@ -515,7 +514,7 @@ auto VerilogParser::_composeAmsType(Type *portType, Type *declarationType) -> Ty
     // WARNING: TODO check this!
     if (portType == nullptr) {
         return hif::copy(declarationType);
-}
+    }
 
     if (dynamic_cast<TypeReference *>(declarationType) == nullptr) {
         // Nothing to do for RTL types: only AMS types must be composed.
@@ -525,19 +524,22 @@ auto VerilogParser::_composeAmsType(Type *portType, Type *declarationType) -> Ty
         // must became: array of logic
         delete portType;
         return declarationType;
-    } if (dynamic_cast<Bit *>(portType) != nullptr) {
+    }
+    if (dynamic_cast<Bit *>(portType) != nullptr) {
         delete portType;
         return declarationType;
-    } if (dynamic_cast<Bitvector *>(portType) != nullptr) {
-        Bitvector *t = static_cast<Bitvector *>(portType);
-        Array *a     = new Array();
+    }
+    if (dynamic_cast<Bitvector *>(portType) != nullptr) {
+        auto *t = dynamic_cast<Bitvector *>(portType);
+        auto *a = new Array();
         a->setType(declarationType);
         a->setSigned(t->isSigned());
         a->setSpan(t->setSpan(nullptr));
 
         delete portType;
         return a;
-    } else if (dynamic_cast<Array *>(portType) != nullptr) {
+    }
+    if (dynamic_cast<Array *>(portType) != nullptr) {
         Array *t = static_cast<Array *>(portType);
         Array *a = new Array();
         a->setType(_composeAmsType(t->getType(), declarationType));
@@ -571,7 +573,7 @@ auto VerilogParser::_makeValueFromFilter(analog_filter_function_arg_t *arg) -> V
 {
     if (arg == nullptr) {
         return nullptr;
-}
+    }
     messageAssert(
         (arg->identifier != nullptr) ^ (arg->constant_optional_arrayinit != nullptr), "unexpected parser result.",
         nullptr, nullptr);
@@ -581,7 +583,7 @@ auto VerilogParser::_makeValueFromFilter(analog_filter_function_arg_t *arg) -> V
         return id;
     }
 
-    auto *agg    = new Aggregate();
+    auto *agg         = new Aggregate();
     long long int ind = 0;
     for (BList<Value>::iterator i = arg->constant_optional_arrayinit->begin();
          i != arg->constant_optional_arrayinit->end(); ++ind) {

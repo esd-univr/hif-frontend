@@ -111,7 +111,7 @@ auto main(int argc, char *argv[]) -> int
 
     // Retrieve input files list (Verilog)
     inputFiles = cLine.getFiles();
-    for (auto & inputFile : inputFiles) {
+    for (auto &inputFile : inputFiles) {
         VerilogParser parser(inputFile, cLine);
         if (!parser.parse(cLine.isParseOnly())) {
             std::string msg("Cannot parse file '");
@@ -125,7 +125,7 @@ auto main(int argc, char *argv[]) -> int
     inputFiles = cLine.getAmsFiles();
     VerilogParser::setVerilogAms(true);
     bool needVAMSStandard = false;
-    for (auto & inputFile : inputFiles) {
+    for (auto &inputFile : inputFiles) {
         VerilogParser parser(inputFile, cLine);
 
         if (!parser.parse(cLine.isParseOnly())) {
@@ -152,7 +152,7 @@ auto main(int argc, char *argv[]) -> int
         delete systOb;
         if (debugStream != errorStream) {
             delete debugStream;
-}
+        }
 
         return 0;
     }
@@ -175,7 +175,7 @@ auto main(int argc, char *argv[]) -> int
     messageInfo("Refining possible AMS units");
     if (needVAMSStandard) {
         markAmsLanguage(systOb, hifLanguage);
-}
+    }
     _stepFileManager.printStep(systOb, "markAmsLanguage");
 
     // Finally, check description
@@ -211,7 +211,7 @@ auto main(int argc, char *argv[]) -> int
 
     if (debugStream != errorStream) {
         delete debugStream;
-}
+    }
 
     hif::application_utils::restoreLogHeader();
     hif::manipulation::flushInstanceCache();

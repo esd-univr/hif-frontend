@@ -124,7 +124,7 @@ auto main(int argc, char *argv[]) -> int
     bool pslMixed = false;
 
     // PARSING SECTION
-    for (auto & inputFile : inputFiles) {
+    for (auto &inputFile : inputFiles) {
         VhdlParser parser(inputFile);
 
         if (!parser.parse(cLine.isParseOnly())) {
@@ -160,7 +160,7 @@ auto main(int argc, char *argv[]) -> int
 
         if (debugStream != errorStream) {
             delete debugStream;
-}
+        }
 
         hif::application_utils::restoreLogHeader();
         hif::manipulation::flushInstanceCache();
@@ -225,7 +225,7 @@ auto main(int argc, char *argv[]) -> int
 
     if (debugStream != errorStream) {
         delete debugStream;
-}
+    }
 
     hif::application_utils::restoreLogHeader();
     hif::manipulation::flushInstanceCache();
