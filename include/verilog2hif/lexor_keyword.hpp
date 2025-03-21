@@ -15,4 +15,4 @@
 /// @param str The keyword string.
 /// @param len The keyword length.
 /// @return The keyword code.
-extern int lexor_keyword_code(const char *str, unsigned len);
+extern auto lexor_keyword_code(const char *str, unsigned len) -> int;
